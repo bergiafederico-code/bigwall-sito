@@ -49,6 +49,8 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+/* il menu in alto resta fisso: le sezioni si fermano sotto di lui, con un po' d'aria */
+section[id], [id="top"] { scroll-margin-top: 72px; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
 a { color: inherit; }
 a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; border-radius: 3px; }
@@ -267,6 +269,7 @@ body.editing [data-k][contenteditable]:focus { outline: 2px solid var(--blue); b
 .strip { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px max(20px, calc((100vw - var(--wrap)) / 2 + 20px)) 14px; scrollbar-width: thin; }
 .strip img { height: 340px; width: auto; flex: none; object-fit: cover; border-radius: var(--r); scroll-snap-align: start; background: var(--line); }
 @media (max-width: 600px) { .strip img { height: 260px; } }
+.prices caption.contrib { caption-side: bottom; text-align: left; color: var(--muted); font-size: 13.5px; padding: 10px 16px 12px; }
 .trk-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .trk-filters:empty { display: none; }
 .chip { font: inherit; font-size: 14px; font-weight: 600; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); padding: 6px 14px; border-radius: 999px; cursor: pointer; }
@@ -481,6 +484,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
         <div style="display:grid;gap:20px">
           <div class="table-box">
             <table class="prices durate" id="prezzi-ragazzi">
+              <caption class="contrib">Prezzi in euro, come contributo associativo.</caption>
               <thead>
                 <tr><th scope="col" rowspan="2">Durata lezione</th><th scope="col" colspan="2">Quadrimestrale</th><th scope="col" colspan="2">Stagionale</th></tr>
                 <tr><th scope="col">1×/sett.</th><th scope="col">2×/sett.</th><th scope="col">1×/sett.</th><th scope="col">2×/sett.</th></tr>
@@ -496,6 +500,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 
           <div class="table-box">
             <table class="prices">
+              <caption class="contrib">Prezzi in euro, come contributo associativo.</caption>
               <thead><tr><th scope="col">Gruppi sportivi</th><th scope="col">Abbonamento annuale</th></tr></thead>
               <tbody>
                 <tr><td>U15 – U17 – U19 – U21</td><td>3 rate da 300 €<small>settembre, gennaio, maggio</small></td></tr>
@@ -523,7 +528,8 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       <div class="price-grid">
         <div class="table-box">
           <table class="prices">
-            <thead><tr><th scope="col">Ciclo di 4 lezioni</th><th scope="col">Euro</th></tr></thead>
+            <caption class="contrib">Prezzi in euro, come contributo associativo.</caption>
+              <thead><tr><th scope="col">Ciclo di 4 lezioni</th><th scope="col">Euro</th></tr></thead>
             <tbody>
               <tr><td>Gruppo</td><td>100,00</td></tr>
               <tr><td>Gruppo + 4 ingressi</td><td>130,00</td></tr>
@@ -534,7 +540,8 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
         </div>
         <div class="table-box">
           <table class="prices">
-            <thead><tr><th scope="col">Scheda di allenamento</th><th scope="col">Euro</th></tr></thead>
+            <caption class="contrib">Prezzi in euro, come contributo associativo.</caption>
+              <thead><tr><th scope="col">Scheda di allenamento</th><th scope="col">Euro</th></tr></thead>
             <tbody>
               <tr><td>Primo mese</td><td>50,00</td></tr>
               <tr><td>Dal secondo mese</td><td>30,00</td></tr>
