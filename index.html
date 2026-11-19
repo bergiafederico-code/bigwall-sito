@@ -278,6 +278,25 @@ body.editing [data-k][contenteditable]:focus { outline: 2px solid var(--blue); b
 .trk-img.scheda { background: #15202b; }
 .trk-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .trk-img.scheda img { object-fit: contain; }
+.trk-img.zoom { position: relative; cursor: zoom-in; }
+.trk-img.zoom::after { content: "\2922"; position: absolute; right: 10px; bottom: 10px; width: 30px; height: 30px; border-radius: 999px; display: grid; place-items: center; background: rgba(0,0,0,.55); color: #fff; font-size: 16px; }
+.trk-img.zoom:focus-visible { outline: 3px solid var(--yellow); outline-offset: -3px; }
+.trk-zoom { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; align-content: center; gap: 10px; padding: 24px; background: rgba(10,15,20,.8); pointer-events: none; animation: trkzoom .15s ease-out; }
+.trk-zoom[hidden] { display: none; }
+.trk-zoom.fisso { pointer-events: auto; cursor: zoom-out; }
+.trk-zoom img { max-width: min(1200px, 94vw); max-height: 84vh; object-fit: contain; border-radius: var(--r); background: #000; box-shadow: 0 10px 40px rgba(0,0,0,.45); }
+.trk-zoom-cap { color: #fff; font-weight: 600; font-size: 15px; text-align: center; }
+@keyframes trkzoom { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .trk-zoom { animation: none; } }
+.trk-next { margin-top: 28px; }
+.trk-next h3 { font-size: 1.5rem; margin: 0 0 12px; }
+.trk-next-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.trk-next-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 18px; box-shadow: inset 5px 0 0 var(--blue); }
+.trk-next-list li.alba { box-shadow: inset 5px 0 0 var(--green); }
+.trk-next-list .quando { font-weight: 600; min-width: 190px; }
+.trk-next-list .chi { color: var(--muted); }
+.trk-next-list .pill { margin-left: auto; }
+.trk-next-list .pill.alba { background: var(--green-soft); color: var(--green); }
 .trk-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
 .trk-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .trk-top b { font-size: 1.15rem; }
@@ -954,6 +973,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       var img = el('img'); img.src = src; img.loading = 'lazy';
       img.alt = (foto ? 'Foto del settore ' : 'Scheda del settore ') + nome;
       fig.appendChild(img); c.appendChild(fig);
+      if (foto) zoomabile(fig, foto, nome);
     }
     var body = el('div', 'trk-body');
     var top = el('div', 'trk-top');
@@ -986,24 +1006,88 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
     return c;
   }
 
+  /* Foto ingrandita: su computer passandoci sopra, su telefono (o con un clic) toccandola */
+  var zoom = null, zoomT = null;
+  var hoverOk = !!(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+  function chiudiZoom() { if (zoom) { zoom.hidden = true; zoom.classList.remove('fisso'); } }
+  function apriZoom(src, nome, fisso) {
+    if (!zoom) {
+      zoom = el('div', 'trk-zoom'); zoom.hidden = true;
+      zoom.setAttribute('role', 'dialog'); zoom.setAttribute('aria-label', 'Foto ingrandita');
+      zoom.appendChild(el('img')); zoom.appendChild(el('span', 'trk-zoom-cap'));
+      zoom.addEventListener('click', chiudiZoom);
+      document.body.appendChild(zoom);
+    }
+    zoom.firstChild.src = src; zoom.firstChild.alt = 'Foto del settore ' + nome;
+    zoom.lastChild.textContent = fisso ? nome + ' · tocca per chiudere' : nome;
+    zoom.classList.toggle('fisso', !!fisso);
+    zoom.hidden = false;
+  }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') chiudiZoom(); });
+  function zoomabile(fig, src, nome) {
+    fig.classList.add('zoom'); fig.tabIndex = 0;
+    fig.setAttribute('role', 'button'); fig.setAttribute('aria-label', 'Ingrandisci la foto di ' + nome);
+    if (hoverOk) {
+      fig.addEventListener('mouseenter', function () { clearTimeout(zoomT); zoomT = setTimeout(function () { apriZoom(src, nome, false); }, 180); });
+      fig.addEventListener('mouseleave', function () { clearTimeout(zoomT); if (zoom && !zoom.classList.contains('fisso')) chiudiZoom(); });
+    }
+    fig.addEventListener('click', function () { clearTimeout(zoomT); apriZoom(src, nome, true); });
+    fig.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); apriZoom(src, nome, true); } });
+  }
+
+  /* Sul sito vanno solo i settori finiti, con foto e blocchi; quelli dei prossimi giorni
+     compaiono in un elenco a parte, con giorno e tracciatore. */
+  var prossimi = [];
+  var nextBox = el('div', 'trk-next'); nextBox.hidden = true;
+  more.parentNode.insertBefore(nextBox, more.nextSibling);
+  function oggiIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function completo(r) { return !!safeUrl(r.foto_url) && Array.isArray(r.blocchi) && r.blocchi.filter(Boolean).length > 0; }
+  function giorno(d) {
+    var t = new Date(String(d || '') + 'T12:00:00');
+    if (isNaN(t)) return d || '';
+    var s = t.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+  function drawNext() {
+    var shown = prossimi.filter(function (r) { return sede === 'Tutte' || r.sede === sede; });
+    nextBox.innerHTML = ''; nextBox.hidden = !shown.length;
+    if (!shown.length) return;
+    nextBox.appendChild(el('h3', null, 'Prossime tracciature'));
+    var ul = el('ul', 'trk-next-list');
+    shown.forEach(function (r) {
+      var li = el('li', r.sede === 'Alba' ? 'alba' : null);
+      li.appendChild(el('span', 'quando', giorno(r.data)));
+      li.appendChild(el('b', null, nomeSettore(r)));
+      var tr = names(r.tracciatori);
+      if (tr.length) li.appendChild(el('span', 'chi', 'traccia ' + tr.join(', ')));
+      if (r.sede) li.appendChild(el('span', 'pill' + (r.sede === 'Alba' ? ' alba' : ''), r.sede));
+      ul.appendChild(li);
+    });
+    nextBox.appendChild(ul);
+  }
+
   function draw() {
     var shown = rows.filter(function (r) { return sede === 'Tutte' || r.sede === sede; });
     list.innerHTML = '';
     shown.slice(0, all ? shown.length : 6).forEach(function (r) { list.appendChild(card(r)); });
     more.hidden = all || shown.length <= 6;
-    if (!shown.length) list.appendChild(el('p', 'meta', 'Nessun settore nuovo per questa sede.'));
+    if (!shown.length && rows.length) list.appendChild(el('p', 'meta', 'Nessun settore nuovo per questa sede.'));
+    drawNext();
     var mem = document.getElementById('trk-member');
     if (mem) { mem.innerHTML = ''; rows.slice(0, 2).forEach(function (r) { mem.appendChild(card(r)); }); }
   }
 
   function start(data) {
-    rows = (Array.isArray(data) ? data : []).filter(Boolean).sort(function (a, b) {
+    var tutte = (Array.isArray(data) ? data : []).filter(Boolean), oggi = oggiIso();
+    rows = tutte.filter(function (r) { return String(r.data || '') <= oggi && completo(r); }).sort(function (a, b) {
       return String(b.data || '').localeCompare(String(a.data || ''));
     }).slice(0, 30);
-    if (!rows.length) { hide(); return; }
-    latestWeek = rows.map(function (r) { return r.settimana || ''; }).sort().pop();
+    prossimi = tutte.filter(function (r) { return String(r.data || '') > oggi; }).sort(function (a, b) {
+      return String(a.data || '').localeCompare(String(b.data || ''));
+    });
+    if (!rows.length && !prossimi.length) { hide(); return; }
     var sedi = ['Tutte'];
-    rows.forEach(function (r) { if (r.sede && sedi.indexOf(r.sede) < 0) sedi.push(r.sede); });
+    rows.concat(prossimi).forEach(function (r) { if (r.sede && sedi.indexOf(r.sede) < 0) sedi.push(r.sede); });
     filters.innerHTML = '';
     if (sedi.length > 2) sedi.forEach(function (s) {
       var b = el('button', 'chip' + (s === sede ? ' on' : ''), s);
@@ -1020,7 +1104,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
   more.addEventListener('click', function () { all = true; draw(); });
 
   if (SUPABASE_URL && SUPABASE_ANON) {
-    fetch(SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/tracciature_sito?select=*&order=data.desc&limit=30', {
+    fetch(SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/tracciature_sito?select=*&order=data.desc&limit=60', {
       headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON }
     }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (d) { if (note) note.hidden = true; start(d); })
