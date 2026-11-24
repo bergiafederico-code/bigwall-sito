@@ -1080,23 +1080,6 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
         </div>
       </fieldset>
 
-      <fieldset id="pre-tipo-box" hidden>
-        <legend>Tipologia di atleta</legend>
-        <div class="seg">
-          <label><input type="radio" name="pre-tipo" value="Amatore" checked> Amatore</label>
-          <label><input type="radio" name="pre-tipo" value="Agonista"> Agonista</label>
-        </div>
-        <small class="hint" id="pre-quote"></small>
-      </fieldset>
-
-      <fieldset>
-        <legend>Sede e attività</legend>
-        <div class="grid3">
-          <div class="field"><label for="p-sede">Sede dove vieni di più</label><select id="p-sede"><option>Carmagnola</option><option>Alba</option></select></div>
-          <div class="field"><label for="p-cosa">Per cosa ti iscrivi</label><select id="p-cosa"><option>Ingressi liberi</option><option>Corso adulti</option><option>Corso ragazzi</option><option>Gruppo sportivo</option><option>Prova gratuita</option></select></div>
-        </div>
-      </fieldset>
-
       <fieldset>
         <legend>Certificato medico</legend>
         <div class="seg">
@@ -2254,10 +2237,6 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     var aggiornaFasi = function () {
       var m = minore(), g = giaFasi();
       $('pre-fasi-dati').hidden = !g;
-      $('pre-tipo-box').hidden = g;
-      $('pre-quote').textContent = m
-        ? 'Quote: tessera FASI 6 \u20ac amatore, 10 \u20ac agonista; quota Rotpunkt 14 \u20ac (dal 1/9 al 30/11: 4, 7 e 8 \u20ac). Dal 1/12 al 31/12 il tesseramento \u00e8 gratuito.'
-        : 'Quote: tessera FASI 10 \u20ac amatore, 20 \u20ac agonista; quota Rotpunkt 15 \u20ac (dal 1/9 al 30/11: 7, 10 e 8 \u20ac). Dal 1/12 al 31/12 il tesseramento \u00e8 gratuito.';
       $('pre-reg-txt').textContent = g
         ? (m ? 'Ho preso visione del regolamento della palestra e lo accetto per mio figlio o mia figlia. Il testo completo \u00e8 nel modulo che firmerai in palestra.'
              : 'Ho preso visione del regolamento della palestra e lo accetto. Il testo completo \u00e8 nel modulo che firmerai in palestra.')
@@ -2311,10 +2290,10 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       var riga = {
         codice: u.codice, stagione: stagione(),
         tipo_modulo: (u.minore ? 'minorenne' : 'maggiorenne') + (u.giaFasi ? '_fasi' : ''),
-        sede: u.sede, attivita: u.cosa,
+        sede: null, attivita: null,
         socio: pulisci(u.socio, !u.minore), genitore: u.minore ? pulisci(u.gen, true) : null,
         societa: u.giaFasi ? u.societa : null, tessera: u.giaFasi ? u.tessera : null,
-        tipologia: u.giaFasi ? null : u.tipo,
+        tipologia: null,
         consensi: { trattamento: u.c[0] === 'si', comunicazione: u.c[1] === 'si', promozione: u.c[2] === 'si' },
         regolamento: true, certificato: 'porto', stato: 'nuova'
       };

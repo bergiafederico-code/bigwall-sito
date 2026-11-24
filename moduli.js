@@ -69,7 +69,7 @@ function stampaModulo(p, loghi) {
     ['Viale Garibaldi 24 p.1-2 Carmagnola TO', 'C.F.94072680013', 'Affiliazione F.A.S.I. n.24310', 'Tel. 01119116396', 'info@bigwallclimb.com', 'www.bigwallclimb.com'].map(function (r) { return '<span>' + r + '</span>'; }).join('') + '</div>' +
     (loghi.bigwall ? '<img src="' + esc(loghi.bigwall) + '" alt="">' : '') + '<b class="palestra">PALESTRA E SCUOLA DI ARRAMPICATA</b>' +
     (loghi.fasi ? '<img class="fasi" src="' + esc(loghi.fasi) + '" alt="">' : '') + '</header>';
-  var piede = '<p class="piede">Pre-iscrizione ' + esc(p.codice) + ' del ' + new Date(p.creata).toLocaleDateString('it-IT') + ' · Sede: ' + esc(p.sede) + ' · Attività: ' + esc(p.attivita) +
+  var piede = '<p class="piede">Pre-iscrizione ' + esc(p.codice) + ' del ' + new Date(p.creata).toLocaleDateString('it-IT') + (p.sede ? ' · Sede: ' + esc(p.sede) : '') + (p.attivita ? ' · Attività: ' + esc(p.attivita) : '') +
     ' · Certificato medico: ' + (p.certificato === 'caricato' ? 'caricato online' : 'da consegnare') + '</p>';
   /* un solo foglio A4 fronte: dati, dichiarazioni, consensi e firme. Regolamento e informativa completi
      restano stampati in palestra (allegati al modulo); il testo del regolamento nel modulo FASI si sostituisce con il rimando. */
