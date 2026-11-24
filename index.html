@@ -117,7 +117,7 @@ nav a.soci { color: var(--on-color); background: var(--blue); padding: 8px 18px;
 nav a.soci:hover { color: var(--on-color); background: var(--green); border-bottom-color: transparent; }
 nav { gap: 20px; }
 .menu-btn { display: none; font: inherit; font-weight: 600; font-size: 15px; background: var(--blue); color: var(--on-color); border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; }
-@media (max-width: 1180px) {
+@media (max-width: 1320px) {
   .menu-btn { display: inline-block; }
   .bar { position: relative; }
   nav { display: none; position: absolute; top: 76px; right: 0; left: 0; flex-direction: column; align-items: stretch; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 8px; box-shadow: 0 12px 30px rgba(0,0,0,.12); }
@@ -132,6 +132,24 @@ nav { gap: 20px; }
 .hero h1 .c { background: var(--blue); color: var(--on-color); padding: 0 .16em; border-radius: .18em; }
 .hero h1 .a { background: var(--green); color: var(--on-color); padding: 0 .16em; border-radius: .18em; }
 .hero p { max-width: 52ch; color: var(--muted); font-size: 1.15rem; }
+/* video dietro al titolo */
+.hero-v { position: relative; overflow: hidden; isolation: isolate; background: #10171f; }
+.hero-v .hero { position: relative; z-index: 1; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 40px; padding: 56px 20px; }
+.hero-v h1 { font-size: clamp(3rem, 7vw, 6.4rem); }
+.hero-v .hv-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; filter: blur(22px) brightness(.5) saturate(1.1); transform: scale(1.15); }
+.hero-v::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(90deg, rgba(10,16,22,.72) 0%, rgba(10,16,22,.35) 60%, rgba(10,16,22,.1) 100%); }
+.hero-v .hv-main { height: min(560px, 70vh); aspect-ratio: 9 / 16; width: auto; object-fit: cover; border-radius: 22px; box-shadow: 0 20px 50px rgba(0,0,0,.45); background: #000; }
+.hero-v h1 { color: #fff; text-shadow: 0 2px 18px rgba(0,0,0,.35); }
+.hero-v .hero-txt { display: grid; gap: 28px; min-width: 0; }
+.hero-v .hero-txt p { color: rgba(255,255,255,.9); }
+@media (max-width: 820px) {
+  .hero-v .hero { grid-template-columns: minmax(0, 1fr); min-height: min(640px, 78vh); align-content: end; padding: 120px 20px 40px; }
+  .hero-v h1 { font-size: clamp(2.6rem, 12vw, 4.4rem); }
+  .hero-v .hv-main { display: none; }
+  .hero-v .hv-bg { filter: none; transform: none; }
+  .hero-v::after { background: linear-gradient(180deg, rgba(10,16,22,.15) 0%, rgba(10,16,22,.25) 40%, rgba(10,16,22,.82) 100%); }
+}
+@media (prefers-reduced-motion: reduce) { .hero-v video { animation: none; } }
 
 section { padding: 56px 0; }
 .head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
@@ -307,8 +325,18 @@ body.editing [data-k][contenteditable]:focus { outline: 2px solid var(--blue); b
 .trk .new { background: var(--yellow); color: #15202b; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; margin-left: 8px; vertical-align: 2px; }
 .trk .meta { color: var(--muted); font-size: 14.5px; }
 .trk-blocks { display: flex; flex-wrap: wrap; gap: 6px; }
-.blk { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; background: var(--bg); padding: 4px 10px 4px 6px; border-radius: 999px; }
-.blk i { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+.blk { display: inline-flex; align-items: stretch; font-size: 14px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.blk-col { display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px 5px 8px; color: var(--ink); }
+.blk-col i { width: 16px; height: 16px; border-radius: 5px; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.2); }
+.blk-col i { border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(128,128,128,.55); }
+.blk-txt { white-space: nowrap; }
+.blk-diff { display: inline-flex; align-items: center; padding: 0 11px; background: var(--ink); color: var(--surface); font-weight: 700; font-size: 13.5px; border-right: 1px solid var(--line); box-shadow: inset 0 0 0 1px rgba(128,128,128,.35); }
+.blk-legend { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.blk-key { display: inline-flex; gap: 12px; font-size: 12px; color: var(--muted); }
+.blk-key span { display: inline-flex; align-items: center; gap: 5px; }
+.blk-key i { width: 12px; height: 12px; background: var(--muted); }
+.blk-key .k-prese i { border-radius: 50%; }
+.blk-key .k-diff i { border-radius: 2px; width: 16px; }
 footer { border-top: 1px solid var(--line); padding: 28px 0 40px; font-size: 14px; color: var(--muted); }
 footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; flex-wrap: wrap; align-items: start; }
 .legal { display: grid; gap: 4px; }
@@ -318,6 +346,27 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 .aff-logos img { height: 52px; width: auto; display: block; }
 .aff-chip { background: #fff; border-radius: var(--r-sm); padding: 8px 10px; }
 .aff-slot { height: 52px; min-width: 88px; display: grid; place-items: center; border: 1.5px dashed var(--line); border-radius: var(--r-sm); font-size: 12.5px; padding: 0 10px; }
+:root { --red: #b3261e; --red-soft: #fbe3e1; }
+:root[data-theme="dark"] { --red: #f2a59f; --red-soft: #3d1d1b; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --red: #f2a59f; --red-soft: #3d1d1b; } }
+/* calendario */
+.cal-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.cal-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.cal-item { display: grid; grid-template-columns: 64px 1fr; gap: 16px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 18px; }
+.cal-date { display: grid; justify-items: center; border-radius: 10px; padding: 8px 4px; background: var(--bg); }
+.cal-date b { font-family: var(--display); font-weight: 900; font-size: 1.8rem; line-height: 1; }
+.cal-date span { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.cal-body { display: grid; gap: 4px; }
+.cal-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.cal-tipo { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 9px; border-radius: 999px; background: var(--sky-soft, rgba(37,99,235,.12)); color: var(--blue); }
+.cal-item.chiusura .cal-tipo { background: var(--red-soft); color: var(--red); }
+.cal-item.evento .cal-tipo { background: rgba(250,204,21,.25); color: var(--ink); }
+.cal-item.chiusura { box-shadow: inset 5px 0 0 var(--red); }
+.cal-titolo { font-size: 1.05rem; }
+.cal-note { color: var(--muted); font-size: 14.5px; }
+.pill.tutte { background: var(--bg); color: var(--ink); }
+#cal-more { margin-top: 12px; }
+.cal-top .pill.alba { background: var(--green-soft); color: var(--green); }
 </style>
 </head>
 <body>
@@ -335,6 +384,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       <a href="#ragazzi">Corsi ragazzi</a>
       <a href="#corsi">Corsi adulti</a>
       <a href="#tracciatura">Tracciatura</a>
+      <a href="#calendario" hidden>Calendario</a>
       <a href="#contatti">Contatti</a>
     </nav>
   </div>
@@ -342,9 +392,15 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 
 <!-- SITO -->
 <main id="sito">
-  <div class="wrap hero" id="top">
-    <h1>Arrampica a<br><span class="c">Carmagnola</span> e <span class="a">Alba</span></h1>
-    <p>Bigwall è la palestra e scuola di arrampicata di Rotpunkt ASD, presente a Carmagnola dal 2016. Da gennaio 2027 presente anche ad Alba.</p>
+  <div class="hero-v" id="top">
+    <video class="hv-bg" src="hero.mp4" poster="hero.jpg" muted loop playsinline autoplay preload="auto" aria-hidden="true" tabindex="-1"></video>
+    <div class="wrap hero">
+      <div class="hero-txt">
+        <h1>Arrampica a<br><span class="c">Carmagnola</span> e <span class="a">Alba</span></h1>
+          <p>Bigwall è la palestra e scuola di arrampicata di Rotpunkt ASD, presente a Carmagnola dal 2016. Da gennaio 2027 presente anche ad Alba.</p>
+      </div>
+      <video class="hv-main" src="hero.mp4" poster="hero.jpg" muted loop playsinline autoplay preload="auto" aria-hidden="true" tabindex="-1"></video>
+    </div>
   </div>
 
   <section id="sedi">
@@ -562,6 +618,18 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       <div class="trk-grid" id="trk-list"></div>
       <button class="btn" type="button" id="trk-more" hidden>Mostra altri settori</button>
       
+    </div>
+  </section>
+
+  <section id="calendario" hidden>
+    <div class="wrap">
+      <div class="head">
+        <h2>Calendario</h2>
+        <p>Gare, eventi e chiusure delle due sedi.</p>
+      </div>
+      <div class="cal-filters" id="cal-filters"></div>
+      <ul class="cal-list" id="cal-list"></ul>
+      <button class="btn" type="button" id="cal-more" hidden>Mostra tutto il calendario</button>
     </div>
   </section>
 
@@ -926,11 +994,15 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 })();
 </script>
 <script>
+/* Collegamento a Supabase: UNICO punto da cambiare quando il progetto trasloca in UE (URL e chiave anon pubblica). */
+window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxkbWp3a3d5bGFvYWJuZWZ5bHlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MTc5NjAsImV4cCI6MjA5OTA5Mzk2MH0.Qm9Xp2FnoW7h6moS3ovDmU8porOM3ezLo9GVAYKdDnU' };
+</script>
+<script>
 (function () {
   /* Tracciature: le pubblica l'app dei turni nella tabella Supabase "tracciature_sito".
      Il sito le legge soltanto, con la chiave pubblica (anon). */
-  var SUPABASE_URL = 'https://ldmjwkwylaoabnefylyl.supabase.co';   // es. https://xxxxxxxx.supabase.co
-  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxkbWp3a3d5bGFvYWJuZWZ5bHlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MTc5NjAsImV4cCI6MjA5OTA5Mzk2MH0.Qm9Xp2FnoW7h6moS3ovDmU8porOM3ezLo9GVAYKdDnU';  // chiave pubblica "anon" del progetto
+  var SUPABASE_URL = window.BW_SB.url;
+  var SUPABASE_ANON = window.BW_SB.anon;
   var ESEMPIO = null;
 
   var sec = document.getElementById('tracciatura');
@@ -970,6 +1042,35 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
     return giorni > -1 && giorni < 7.5;
   }
 
+  /* colore della difficolta': lo manda l'app (gradoHex); se manca, si prova dal nome */
+  var COLORI_NOTI = { giallo: '#FACC15', verde: '#4ADE80', blu: '#60A5FA', azzurro: '#7DD3FC', rosso: '#F87171', nero: '#1F2937', bianco: '#F3F4F6', rosa: '#F472B6', viola: '#A78BFA', arancio: '#FB923C', arancione: '#FB923C', grigio: '#9CA3AF', marrone: '#A16207', fucsia: '#E879F9' };
+  function coloreDiff(b) {
+    var h = safeHex(b.gradoHex || b.grado_hex || '');
+    if (h && h !== safeHex('')) return h;
+    return COLORI_NOTI[String(b.grado || '').trim().toLowerCase()] || '';
+  }
+  /* "Giallo" -> "prese gialle": il colore si accorda con prese (femminile plurale) */
+  var INVARIABILI = { blu: 1, rosa: 1, viola: 1, fucsia: 1, lilla: 1, ocra: 1, beige: 1, magenta: 1, turchese: 0 };
+  function presePlurale(nome) {
+    return String(nome).trim().split(/\s+/).map(function (w, i) {
+      var p = w.toLowerCase();
+      if (i > 0 && (p === 'chiaro' || p === 'scuro')) return p.slice(0, -1) + 'e';
+      if (INVARIABILI[p]) return p;
+      if (p === 'arancio') return 'arancioni';
+      if (/co$/.test(p)) return p.slice(0, -2) + 'che';
+      if (/go$/.test(p)) return p.slice(0, -2) + 'ghe';
+      if (/io$/.test(p)) return p.slice(0, -1) + 'e';
+      if (/[oa]$/.test(p)) return p.slice(0, -1) + 'e';
+      if (/e$/.test(p)) return p.slice(0, -1) + 'i';
+      return p;
+    }).join(' ');
+  }
+  function testoSu(hex) {
+    var m = /^#?([0-9a-f]{6})$/i.exec(hex || ''); if (!m) return '#15202b';
+    var n = parseInt(m[1], 16), r = n >> 16 & 255, g = n >> 8 & 255, bl = n & 255;
+    return (0.299 * r + 0.587 * g + 0.114 * bl) > 150 ? '#15202b' : '#ffffff';
+  }
+
   function card(r) {
     var c = el('article', 'trk' + (r.sede === 'Alba' ? ' alba' : ''));
     var nome = nomeSettore(r), bl = Array.isArray(r.blocchi) ? r.blocchi.filter(Boolean) : [];
@@ -989,22 +1090,36 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
     top.appendChild(h);
     if (r.sede) top.appendChild(el('span', 'pill' + (r.sede === 'Alba' ? ' alba' : ''), r.sede));
     body.appendChild(top);
+    /* i nomi dei tracciatori non si mostrano sul sito (scelta di Federico, 19/11/2026) */
     var meta = fmtDate(r.data || '');
-    var tr = names(r.tracciatori);
-    if (tr.length) meta += ' · tracciato da ' + tr.join(', ');
     body.appendChild(el('span', 'meta', meta));
     if (bl.length) {
       var wrap = el('div', 'trk-blocks');
       bl.forEach(function (b) {
         if (!b) return;
+        /* a sinistra il colore delle prese (pallino tondo, come una presa), a destra la
+           difficolta' (etichetta piena del suo colore, come il cartellino in parete) */
         var chip = el('span', 'blk');
+        var col = el('span', 'blk-col');
         var dot = el('i'); dot.style.background = safeHex(b.hex);
-        chip.appendChild(dot);
-        chip.appendChild(document.createTextNode(String(b.grado || '?')));
-        chip.title = [b.colore, b.grado, b.tracciatore].filter(Boolean).join(' · ');
+        col.appendChild(dot);
+        col.appendChild(el('span', 'blk-txt', b.colore ? 'Prese ' + presePlurale(b.colore) : 'Prese ?'));
+        var dHex = coloreDiff(b);
+        var diff = el('b', 'blk-diff', String(b.grado || '?'));
+        if (dHex) { diff.style.background = dHex; diff.style.color = testoSu(dHex); }
+        chip.appendChild(diff);
+        chip.appendChild(col);
+        chip.title = 'Difficoltà: ' + String(b.grado || '?') + ' · prese: ' + String(b.colore || '?');
         wrap.appendChild(chip);
       });
-      body.appendChild(el('span', 'lbl', bl.length + (bl.length === 1 ? ' blocco' : ' blocchi')));
+      var leg = el('div', 'blk-legend');
+      leg.appendChild(el('span', 'lbl', bl.length + (bl.length === 1 ? ' blocco' : ' blocchi')));
+      var key = el('span', 'blk-key');
+      var k1 = el('span', 'k-prese'); k1.appendChild(el('i')); k1.appendChild(document.createTextNode('colore prese'));
+      var k2 = el('span', 'k-diff'); k2.appendChild(el('i')); k2.appendChild(document.createTextNode('difficoltà'));
+      key.appendChild(k2); key.appendChild(k1);
+      leg.appendChild(key);
+      body.appendChild(leg);
       body.appendChild(wrap);
     } else {
       body.appendChild(el('span', 'meta', 'Blocchi in arrivo'));
@@ -1043,12 +1158,13 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
   }
 
   /* Sul sito vanno solo i settori finiti, con foto e blocchi; quelli dei prossimi giorni
-     compaiono in un elenco a parte, con giorno e tracciatore. */
+     compaiono in un elenco a parte, con il giorno. */
   var prossimi = [];
   var nextBox = el('div', 'trk-next'); nextBox.hidden = true;
   more.parentNode.insertBefore(nextBox, more.nextSibling);
   function oggiIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function completo(r) { return !!safeUrl(r.foto_url) && Array.isArray(r.blocchi) && r.blocchi.filter(Boolean).length > 0; }
+  function iso1() { var d = new Date(); d.setDate(d.getDate() + 1); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function giorno(d) {
     var t = new Date(String(d || '') + 'T12:00:00');
     if (isNaN(t)) return d || '';
@@ -1063,10 +1179,8 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
     var ul = el('ul', 'trk-next-list');
     shown.forEach(function (r) {
       var li = el('li', r.sede === 'Alba' ? 'alba' : null);
-      li.appendChild(el('span', 'quando', giorno(r.data)));
+      li.appendChild(el('span', 'quando', r.data === oggiIso() ? 'Oggi' : r.data === iso1() ? 'Domani' : giorno(r.data)));
       li.appendChild(el('b', null, nomeSettore(r)));
-      var tr = names(r.tracciatori);
-      if (tr.length) li.appendChild(el('span', 'chi', 'traccia ' + tr.join(', ')));
       if (r.sede) li.appendChild(el('span', 'pill' + (r.sede === 'Alba' ? ' alba' : ''), r.sede));
       ul.appendChild(li);
     });
@@ -1089,7 +1203,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
     rows = tutte.filter(function (r) { return String(r.data || '') <= oggi && completo(r); }).sort(function (a, b) {
       return String(b.data || '').localeCompare(String(a.data || ''));
     }).slice(0, 30);
-    prossimi = tutte.filter(function (r) { return String(r.data || '') > oggi; }).sort(function (a, b) {
+    prossimi = tutte.filter(function (r) { return String(r.data || '') >= oggi && !completo(r); }).sort(function (a, b) {
       return String(a.data || '').localeCompare(String(b.data || ''));
     });
     if (!rows.length && !prossimi.length) { hide(); return; }
@@ -1121,6 +1235,91 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
   } else {
     hide();
   }
+})();
+</script>
+<script>
+/* Calendario: gare, eventi e chiusure, scritti dall'app dei turni nella tabella calendario_sito */
+(function () {
+  var SB_URL = window.BW_SB.url;
+  var SB_KEY = window.BW_SB.anon;
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function iso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function tra(n) { var d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + n); return d; }
+  function dataIt(s, opz) { var t = new Date(String(s) + 'T12:00:00'); return isNaN(t) ? String(s || '') : t.toLocaleDateString('it-IT', opz || { weekday: 'long', day: 'numeric', month: 'long' }); }
+  function maiusc(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  /* ---------- Calendario: gare, eventi, chiusure (tabella calendario_sito, scritta dall'app) ---------- */
+  var calSec = $('calendario'), calList = $('cal-list'), calFil = $('cal-filters'), calNav = document.querySelector('nav a[href="#calendario"]');
+  var calRows = [], calSede = 'Tutte', calTutti = false;
+  var TIPI = { gara: 'Gara', evento: 'Evento', chiusura: 'Chiusura' };
+  function calHide() { calSec.hidden = true; if (calNav) calNav.hidden = true; }
+  function calShow() { calSec.hidden = false; if (calNav) calNav.hidden = false; }
+  function calDraw() {
+    var shown = calRows.filter(function (r) { return calSede === 'Tutte' || !r.sede || r.sede === calSede; });
+    calList.innerHTML = '';
+    shown.slice(0, calTutti ? shown.length : 6).forEach(function (r) {
+      var li = el('li', 'cal-item ' + (TIPI[r.tipo] ? r.tipo : 'evento'));
+      var d = new Date(r.data_inizio + 'T12:00:00');
+      var box = el('div', 'cal-date');
+      box.appendChild(el('b', null, String(d.getDate())));
+      box.appendChild(el('span', null, d.toLocaleDateString('it-IT', { month: 'short' }).replace('.', '')));
+      li.appendChild(box);
+      var body = el('div', 'cal-body');
+      var top = el('div', 'cal-top');
+      top.appendChild(el('span', 'cal-tipo', TIPI[r.tipo] || 'Evento'));
+      top.appendChild(el('span', 'pill' + (r.sede === 'Alba' ? ' alba' : r.sede ? '' : ' tutte'), r.sede || 'Tutte le sedi'));
+      body.appendChild(top);
+      body.appendChild(el('b', 'cal-titolo', r.titolo || ''));
+      var quando = maiusc(dataIt(r.data_inizio));
+      if (r.data_fine && r.data_fine !== r.data_inizio) quando += ' – ' + dataIt(r.data_fine);
+      if (r.orario) quando += ' · ' + r.orario;
+      if (r.luogo) quando += ' · ' + r.luogo;
+      body.appendChild(el('span', 'meta', quando));
+      if (r.note) body.appendChild(el('span', 'cal-note', r.note));
+      li.appendChild(body);
+      calList.appendChild(li);
+    });
+    $('cal-more').hidden = calTutti || shown.length <= 6;
+  }
+  function calStart(data, esempio) {
+    var oggi = iso(tra(0));
+    calRows = (Array.isArray(data) ? data : []).filter(function (r) { return r && (r.data_fine || r.data_inizio) >= oggi; })
+      .sort(function (a, b) { return String(a.data_inizio).localeCompare(String(b.data_inizio)); });
+    if (!calRows.length) { calHide(); return; }
+    calShow();
+    var sedi = ['Tutte'];
+    calRows.forEach(function (r) { if (r.sede && sedi.indexOf(r.sede) < 0) sedi.push(r.sede); });
+    calFil.innerHTML = '';
+    if (sedi.length > 2) sedi.forEach(function (s) {
+      var b = el('button', 'chip', s); b.type = 'button'; b.setAttribute('aria-pressed', s === calSede ? 'true' : 'false');
+      b.addEventListener('click', function () { calSede = s; calFil.querySelectorAll('.chip').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); calDraw(); });
+      calFil.appendChild(b);
+    });
+    calDraw();
+  }
+  if (calSec) {
+    $('cal-more').addEventListener('click', function () { calTutti = true; calDraw(); });
+    fetch(SB_URL + '/rest/v1/calendario_sito?select=*&order=data_inizio.asc&limit=60', { headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY } })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) { calStart(d, false); })
+      .catch(function () { calHide(); });
+  }
+
+})();
+</script>
+<script>
+/* video della testata: si ferma se si chiede meno movimento o se non si vede, e non parte con il risparmio dati */
+(function () {
+  var vv = document.querySelectorAll('.hero-v video'); if (!vv.length) return;
+  var calma = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var risparmio = navigator.connection && navigator.connection.saveData;
+  if (calma || risparmio) { vv.forEach(function (v) { v.removeAttribute('autoplay'); v.preload = 'none'; v.pause(); }); return; }
+  var vis = function (v) { return v.offsetParent !== null; };
+  vv.forEach(function (v) { if (!vis(v)) { v.pause(); } });
+  var allinea = function () { vv.forEach(function (v) { if (vis(v)) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else v.pause(); }); };
+  window.addEventListener('resize', allinea);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { e.forEach(function (x) { if (x.isIntersecting) allinea(); else vv.forEach(function (v) { v.pause(); }); }); }).observe(document.querySelector('.hero-v'));
 })();
 </script>
 </body>
