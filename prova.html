@@ -477,7 +477,11 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 .bx i { font-style: normal; width: 15px; height: 19px; border: 1px solid #333; margin-left: -1px; display: inline-flex; align-items: center; justify-content: center; font-family: "Courier New", monospace; font-size: 12px; font-weight: 700; }
 .pre-gia { margin-bottom: 18px; max-width: 760px; }
 .mod-cons { list-style: none; padding: 0; margin: 4px 0 0; display: grid; gap: 5px; }
-@media print { body.stampa-modulo .foglio { font-size: 11px; } @page { size: A5 landscape; margin: 8mm; } }
+@media print { @page { size: A4 portrait; margin: 9mm 12mm; } }
+.testo-mod { margin: 8px 0 4px; } .testo-mod summary { cursor: pointer; font-weight: 600; color: var(--blue); }
+.testo-mod > div { max-height: 340px; overflow: auto; margin-top: 8px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); font-size: 14px; background: var(--bg); }
+.testo-mod > div p { margin: 0 0 8px; }
+#modulo .foglio .pag { border-bottom: 1px dashed #bbb; padding-bottom: 12px; margin-bottom: 12px; }
 @media print {
   body.stampa-modulo > *:not(#preiscrizione) { display: none !important; }
   body.stampa-modulo #preiscrizione > .wrap > *:not(#modulo) { display: none !important; }
@@ -668,7 +672,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
             </table>
           </div>
           <p class="note" id="anno-msg" data-k="k132">Primo quadrimestre: ottobre – gennaio. Secondo quadrimestre: febbraio – maggio.</p>
-          <a class="btn solid cta" href="#prenota-prova" data-k="k916">Prenota una prova gratuita</a>
+          <a class="btn solid cta" href="#prenota-prova" data-k="k916">Prenota una prova gratuita per ragazzi</a>
         </div>
 
         <div style="display:grid;gap:20px">
@@ -1064,11 +1068,11 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
         <div class="grid3" id="pre-socio"></div>
       </fieldset>
 
-      <fieldset class="solo-adulto">
+      <fieldset>
         <legend>Tesseramento FASI</legend>
         <div class="seg">
-          <label><input type="radio" name="pre-fasi" value="no" checked> Non ho la tessera FASI</label>
-          <label><input type="radio" name="pre-fasi" value="si"> Ho già la tessera FASI con un'altra società</label>
+          <label><input type="radio" name="pre-fasi" value="no" checked> Non ancora tesserato FASI: si tessera con noi</label>
+          <label><input type="radio" name="pre-fasi" value="si"> Già tesserato FASI con un'altra società</label>
         </div>
         <div class="grid2" id="pre-fasi-dati" hidden>
           <div class="field"><label for="p-societa">Società</label><input id="p-societa"></div>
@@ -1106,8 +1110,10 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       <fieldset>
         <legend>Regolamento e privacy</legend>
         <label class="check"><input type="checkbox" id="pre-reg"> <span id="pre-reg-txt">Ho preso visione del regolamento della palestra e lo accetto. Il testo completo è nel modulo che firmerai in palestra.</span></label>
+        <details class="testo-mod" id="pre-det-reg"><summary>Leggi il regolamento</summary><div id="pre-txt-reg"></div></details>
         <div class="consensi">
-          <p class="hint">Alla luce dell'informativa privacy (completa nel modulo che firmerai):</p>
+          <p class="hint">Alla luce dell'informativa privacy (la trovi anche nel modulo che firmerai):</p>
+          <details class="testo-mod" id="pre-det-priv"><summary>Leggi l'informativa privacy</summary><div id="pre-txt-priv"></div></details>
           <div class="cons"><span>Trattamento dei dati personali, compresi quelli sanitari</span><div class="seg"><label><input type="radio" name="c1" value="si"> Esprimo il consenso</label><label><input type="radio" name="c1" value="no"> Non esprimo il consenso</label></div></div>
           <div class="cons"><span>Comunicazione dei dati a enti pubblici e società private per le finalità dell'informativa (FASI, assicurazione…)</span><div class="seg"><label><input type="radio" name="c2" value="si"> Esprimo il consenso</label><label><input type="radio" name="c2" value="no"> Non esprimo il consenso</label></div></div>
           <div class="cons"><span>Trattamento dei dati per la promozione di Rotpunkt ASD (foto, video, newsletter)</span><div class="seg"><label><input type="radio" name="c3" value="si"> Esprimo il consenso</label><label><input type="radio" name="c3" value="no"> Non esprimo il consenso</label></div></div>
@@ -1134,14 +1140,14 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
     <p class="demo"><strong>Anteprima.</strong> Posti e date sono di esempio; non viene prenotato niente.</p>
     <div class="head"><h2 data-k="k922">Prenota</h2><p data-k="k923">Una prova gratuita per i ragazzi o un ciclo del corso adulti. Ti confermiamo la prenotazione per email.</p></div>
     <div class="tabs" role="tablist">
-      <button type="button" role="tab" id="tab-prova" aria-selected="true">Prova gratuita</button>
+      <button type="button" role="tab" id="tab-prova" aria-selected="true">Prova gratuita ragazzi</button>
       <button type="button" role="tab" id="tab-corso" aria-selected="false">Corso adulti</button>
     </div>
 
     <div id="pr-prova">
       <div class="card narrow">
         <div class="field"><label for="pr-anno">Anno di nascita del ragazzo o della ragazza</label><input id="pr-anno" type="number" inputmode="numeric" min="2009" max="2022" placeholder="Es. 2016"></div>
-        <small class="hint">Ti mostriamo i turni adatti e le prossime date con posti liberi.</small>
+        <small class="hint" id="pr-chi">Solo per i corsi ragazzi. Ti mostriamo i turni adatti e le prossime date con posti liberi. Per gli adulti c'è il corso base, nella scheda «Corso adulti».</small>
       </div>
       <div class="slots" id="pr-slots"></div>
     </div>
@@ -2134,6 +2140,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
   }
 })();
 </script>
+<script src="moduli.js"></script>
 <script>
 /* Calendario, pre-iscrizione e prenotazioni (anteprima nella bozza) */
 (function () {
@@ -2211,7 +2218,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     /* campo: [chiave, etichetta, caselle nel modulo, tipo, larghezza] */
     var PERSONA = [['nome', 'Nome', 6], ['cognome', 'Cognome', 6], ['nascita', 'Nato/a il', 4, 'date'], ['luogo', 'Nato/a a', 6], ['provn', 'Prov.', 2, 'prov'],
       ['cf', 'Codice fiscale', 6, 'cf'], ['ind', 'Indirizzo', 6, 'ind'], ['civico', 'N°', 2, 'ind'], ['cap', 'CAP', 3, 'ind'], ['citta', 'Città', 5, 'ind'], ['prov', 'Prov.', 2, 'ind'],
-      ['cell', 'Cellulare', 5, 'contatto'], ['email', 'Email', 7, 'contatto']];
+      ['email', 'Email', 6, 'contatto'], ['email2', 'Ripeti l\u2019email', 6, 'contatto'], ['cell', 'Cellulare', 6, 'contatto']];
     var crea = function (box, pref) {
       PERSONA.forEach(function (c) {
         var f = el('div', 'field' + (c[3] === 'ind' ? ' f-ind' : '') + (c[3] === 'contatto' ? ' f-contatto' : '') + ' s' + c[2]);
@@ -2220,6 +2227,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
         var i = el('input'); i.id = id;
         if (c[3] === 'date') i.type = 'date';
         if (c[0] === 'email') { i.type = 'email'; i.autocomplete = 'email'; }
+        if (c[0] === 'email2') { i.type = 'email'; i.autocomplete = 'off'; }
         if (c[0] === 'cell') { i.type = 'tel'; i.autocomplete = 'tel'; }
         if (c[0] === 'cap') { i.inputMode = 'numeric'; i.maxLength = 5; }
         if (c[3] === 'cf') { i.maxLength = 16; i.style.textTransform = 'uppercase'; }
@@ -2242,7 +2250,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     };
     fp.querySelectorAll('input[name="pre-chi"]').forEach(function (r) { r.addEventListener('change', aggiornaChi); });
     $('pre-stesso').addEventListener('change', aggiornaChi);
-    var giaFasi = function () { return !minore() && fp.querySelector('input[name="pre-fasi"]:checked').value === 'si'; };
+    var giaFasi = function () { return fp.querySelector('input[name="pre-fasi"]:checked').value === 'si'; };
     var aggiornaFasi = function () {
       var m = minore(), g = giaFasi();
       $('pre-fasi-dati').hidden = !g;
@@ -2250,12 +2258,27 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       $('pre-quote').textContent = m
         ? 'Quote: tessera FASI 6 \u20ac amatore, 10 \u20ac agonista; quota Rotpunkt 14 \u20ac (dal 1/9 al 30/11: 4, 7 e 8 \u20ac). Dal 1/12 al 31/12 il tesseramento \u00e8 gratuito.'
         : 'Quote: tessera FASI 10 \u20ac amatore, 20 \u20ac agonista; quota Rotpunkt 15 \u20ac (dal 1/9 al 30/11: 7, 10 e 8 \u20ac). Dal 1/12 al 31/12 il tesseramento \u00e8 gratuito.';
-      if (!m) $('pre-reg-txt').textContent = g
-        ? 'Ho preso visione del regolamento della palestra e lo accetto. Il testo completo \u00e8 nel modulo che firmerai in palestra.'
-        : 'Chiedo di essere ammesso come socio di Rotpunkt ASD; conosco e accetto statuto e regolamento. Il testo completo \u00e8 nel modulo che firmerai in palestra.';
+      $('pre-reg-txt').textContent = g
+        ? (m ? 'Ho preso visione del regolamento della palestra e lo accetto per mio figlio o mia figlia. Il testo completo \u00e8 nel modulo che firmerai in palestra.'
+             : 'Ho preso visione del regolamento della palestra e lo accetto. Il testo completo \u00e8 nel modulo che firmerai in palestra.')
+        : (m ? 'Chiedo che mio figlio o mia figlia sia ammesso come socio di Rotpunkt ASD; conosco e accetto statuto e regolamento. Il testo completo \u00e8 nel modulo che firmerai in palestra.'
+             : 'Chiedo di essere ammesso come socio di Rotpunkt ASD; conosco e accetto statuto e regolamento. Il testo completo \u00e8 nel modulo che firmerai in palestra.');
     };
     fp.querySelectorAll('input[name="pre-fasi"], input[name="pre-chi"]').forEach(function (r) { r.addEventListener('change', aggiornaFasi); });
+    $('pre-stesso').addEventListener('change', aggiornaFasi);
     aggiornaFasi();
+    /* regolamento e informativa da leggere prima di inviare: gli stessi testi del modulo cartaceo (moduli.js) */
+    var tipoMod = function () { return (minore() ? 'minorenne' : 'maggiorenne') + (giaFasi() ? '_fasi' : ''); };
+    var riempiTesti = function () {
+      ['reg', 'priv'].forEach(function (q) {
+        var d = $('pre-det-' + q); if (!d) return;
+        if (typeof testoModulo !== 'function') { d.hidden = true; return; }
+        if (d.open) $('pre-txt-' + q).innerHTML = testoModulo(tipoMod(), q === 'reg' ? 'regolamento' : 'informativa');
+      });
+    };
+    ['reg', 'priv'].forEach(function (q) { var d = $('pre-det-' + q); if (d) d.addEventListener('toggle', riempiTesti); });
+    fp.querySelectorAll('input[name="pre-chi"], input[name="pre-fasi"]').forEach(function (r) { r.addEventListener('change', riempiTesti); });
+    riempiTesti();
     fp.querySelectorAll('input[name="pre-cert"]').forEach(function (r) { r.addEventListener('change', function () { $('pre-cert-box').hidden = fp.querySelector('input[name="pre-cert"]:checked').value !== 'carico'; }); });
     var val = function (id) { var x = $(id); return x ? String(x.value || '').trim() : ''; };
     var radio = function (n) { var x = fp.querySelector('input[name="' + n + '"]:checked'); return x ? x.value : ''; };
@@ -2269,7 +2292,9 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
         var v = val(pref + '-' + c[0]), ok = !!v;
         if (c[3] === 'cf') ok = CF.test(v.toUpperCase());
         if (c[0] === 'cap') ok = /^\d{5}$/.test(v);
-        if (c[0] === 'email') ok = /.+@.+\..+/.test(v);
+        if (c[0] === 'email') ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+        if (c[0] === 'email2') ok = !!v && v.toLowerCase() === val(pref + '-email').toLowerCase();
+        if (c[0] === 'cell') ok = /^\+?\d{9,15}$/.test(v.replace(/[\s.\-\/]/g, ''));
         if (c[0] === 'prov' || c[0] === 'provn') ok = /^[A-Za-z]{2}$/.test(v);
         if (!ok) err.push(pref + '-' + c[0]);
       });
@@ -2285,7 +2310,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       };
       var riga = {
         codice: u.codice, stagione: stagione(),
-        tipo_modulo: u.minore ? 'minorenne' : (u.giaFasi ? 'maggiorenne_fasi' : 'maggiorenne'),
+        tipo_modulo: (u.minore ? 'minorenne' : 'maggiorenne') + (u.giaFasi ? '_fasi' : ''),
         sede: u.sede, attivita: u.cosa,
         socio: pulisci(u.socio, !u.minore), genitore: u.minore ? pulisci(u.gen, true) : null,
         societa: u.giaFasi ? u.societa : null, tessera: u.giaFasi ? u.tessera : null,
@@ -2293,6 +2318,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
         consensi: { trattamento: u.c[0] === 'si', comunicazione: u.c[1] === 'si', promozione: u.c[2] === 'si' },
         regolamento: true, certificato: 'porto', stato: 'nuova'
       };
+      u.riga = Object.assign({ creata: new Date().toISOString() }, riga);
       return fetch(SB_URL + '/rest/v1/preiscrizioni', {
         method: 'POST',
         headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
@@ -2310,7 +2336,8 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       fp.querySelectorAll('[aria-invalid]').forEach(function (x) { x.removeAttribute('aria-invalid'); });
       err.forEach(function (id) { $(id).setAttribute('aria-invalid', 'true'); });
       var msg = '';
-      if (err.length) msg = 'Controlla i campi segnati in rosso: mancano o non sono scritti giusti.';
+      if (err.some(function (id) { return /-email2$/.test(id); }) && err.length <= 2) msg = 'Le due email non coincidono: controlla di averla scritta giusta.';
+      else if (err.length) msg = 'Controlla i campi segnati in rosso: mancano o non sono scritti giusti. Tutti i dati servono per il tesseramento FASI.';
       else if (!m && eta(val('p-nascita')) < 18) msg = 'Dalla data di nascita risulti minorenne: scegli «Iscrivo mio figlio o mia figlia» e compila i dati del genitore.';
       else if (m && eta(val('p-nascita')) >= 18) msg = 'Dalla data di nascita risulta maggiorenne: scegli «Mi iscrivo io».';
       else if (!$('pre-reg').checked) msg = 'Per inviare serve l’accettazione del regolamento.';
@@ -2347,7 +2374,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       luca: { nome: 'Luca', cognome: 'Rossi', nascita: '2005-06-12', luogo: 'Carmagnola', provn: 'TO', cf: 'RSSLCU05H12B791W', cell: '3471234567', email: 'luca.rossi@esempio.it' }
     };
     var CASA = { ind: 'Via Torino', civico: '15', cap: '10022', citta: 'Carmagnola', prov: 'TO' };
-    var metti = function (pref, o) { PERSONA.forEach(function (c) { var x = $(pref + '-' + c[0]); if (x) x.value = o[c[0]] || ''; }); };
+    var metti = function (pref, o) { PERSONA.forEach(function (c) { var x = $(pref + '-' + c[0]); if (x) x.value = o[c[0]] || (c[0] === 'email2' ? o.email || '' : ''); }); };
     window.bwRinnovo = function (s) {
       var d = GIA[s && s.id] || GIA.laura, m = eta(d.nascita) < 18;
       fp.reset(); fp.hidden = false; $('pre-done').hidden = true; $('modulo').hidden = true; $('pre-err').hidden = true;
@@ -2390,6 +2417,19 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     };
     $('pre-vedi').addEventListener('click', function () {
       var u = ultimo, mo = $('modulo'); if (!u) return;
+      if (typeof stampaModulo === 'function' && u.riga) {
+        if (!$('css-modulo')) { var cs = el('style'); cs.id = 'css-modulo'; cs.textContent = CSS_MODULO; document.head.appendChild(cs); }
+        mo.innerHTML = '';
+        var bar0 = el('div', 'modulo-bar'), st0 = el('button', 'btn solid', 'Stampa'); st0.type = 'button';
+        st0.addEventListener('click', function () { document.body.classList.add('stampa-modulo'); window.print(); setTimeout(function () { document.body.classList.remove('stampa-modulo'); }, 500); });
+        bar0.appendChild(el('span', 'hint', 'Il modulo come lo stampa la segreteria (un foglio A4): lo firmi in palestra, insieme a regolamento e informativa già stampati.'));
+        bar0.appendChild(st0); mo.appendChild(bar0);
+        var lg = document.querySelector('.logo img'), lf = document.querySelector('img[alt^="FASI"]');
+        var f0 = el('div'); f0.innerHTML = stampaModulo(u.riga, { bigwall: lg ? lg.src : '', fasi: lf ? lf.src : '' });
+        mo.appendChild(f0.firstChild);
+        mo.hidden = false; mo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
       mo.innerHTML = '';
       var bar = el('div', 'modulo-bar');
       var st = el('button', 'btn solid', 'Stampa'); st.type = 'button';
@@ -2506,6 +2546,8 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       var v = String($('pr-anno').value), y = parseInt(v, 10), box = $('pr-slots');
       box.innerHTML = '';
       if (v.length !== 4) return;
+      var mn = +$('pr-anno').min, mx = +$('pr-anno').max;
+      if (mn && mx && (y < mn || y > mx)) { box.appendChild(el('p', 'meta', 'La prova gratuita \u00e8 per i corsi ragazzi (nati dal ' + mn + ' al ' + mx + '). Per gli adulti guarda la scheda \u00abCorso adulti\u00bb.')); return; }
       if (!OFF) { if (ESEMPI) proveEsempio(y, box); else nonDisp(box); return; }
       var l = OFF.filter(function (o) { return o.tipo === 'prova' && (o.anno_da == null || y >= o.anno_da) && (o.anno_a == null || y <= o.anno_a); });
       l.forEach(function (o) {
@@ -2537,7 +2579,16 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then(function (d) { OFF = Array.isArray(d) ? d : []; })
         .catch(function () { OFF = null; })
-        .then(function () { disegnaProve(); disegnaCorsi(); });
+        .then(function () { annate(); disegnaProve(); disegnaCorsi(); });
+    };
+    /* per chi e' la prova: le annate dei corsi ragazzi (dalle offerte, o dalla tabella dei turni) */
+    var annate = function () {
+      var da = 9999, a = 0;
+      (OFF || []).forEach(function (o) { if (o.tipo === 'prova') { if (o.anno_da) da = Math.min(da, o.anno_da); if (o.anno_a) a = Math.max(a, o.anno_a); } });
+      if (a === 0) document.querySelectorAll('#years tbody tr').forEach(function (tr) { if (+tr.dataset.from) da = Math.min(da, +tr.dataset.from); if (+tr.dataset.to) a = Math.max(a, +tr.dataset.to); });
+      if (a === 0) return;
+      $('pr-anno').min = da; $('pr-anno').max = a;
+      $('pr-chi').textContent = 'Solo per i corsi ragazzi: nati dal ' + da + ' al ' + a + '. Ti mostriamo i turni adatti e le prossime date con posti liberi. Per gli adulti c\u2019\u00e8 il corso base, nella scheda \u00abCorso adulti\u00bb.';
     };
     $('pr-anno').addEventListener('input', disegnaProve);
     leggiOfferte();
