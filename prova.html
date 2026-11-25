@@ -520,6 +520,10 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 .slot small.liberi { color: var(--green); }
 .slot small.pieno { color: var(--red); }
 #f-pren, #pr-done { margin-top: 8px; }
+.altra { margin-top: 22px; }
+.altra .btn { margin-top: 10px; }
+#al-alt button { font: inherit; min-height: 44px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+#al-alt button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
 </style>
 </head>
 <body>
@@ -1204,7 +1208,34 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       <div class="giorni" id="pr-giorni" role="group" aria-label="Giorno"></div>
       <div class="orari" id="pr-orari"></div>
     </div>
+
+    <div class="card narrow altra" id="pr-altra-box">
+      <b>Non trovi una data buona?</b>
+      <p class="hint">Lasciaci una richiesta: scegli una delle alternative o scrivi tu giorno e orario. Ti rispondiamo sempre, anche se il corso non parte.</p>
+      <button class="btn" type="button" id="pr-altra-apri">Chiedi un'altra data</button>
     </div>
+    </div>
+
+    <form class="card narrow" id="f-altra" hidden novalidate>
+      <span class="lbl">Richiesta di un'altra data</span>
+      <b id="al-cosa"></b>
+      <div id="al-alt-box">
+        <span class="lbl">Queste date andrebbero bene?</span>
+        <div class="giorni" id="al-alt" role="group" aria-label="Alternative"></div>
+      </div>
+      <div class="field"><label for="al-libero" id="al-libero-lbl">Oppure scrivi tu giorno e orario che preferisci</label><input id="al-libero" placeholder="Es. giovedì dopo le 19"></div>
+      <div class="field solo-prova-al"><label for="al-ragazzo">Nome del ragazzo o della ragazza e anno di nascita</label><input id="al-ragazzo"></div>
+      <div class="field"><label for="al-nome" id="al-nome-lbl">Nome e cognome</label><input id="al-nome" autocomplete="name"></div>
+      <div class="grid2">
+        <div class="field"><label for="al-email">Email</label><input id="al-email" type="email" autocomplete="email"></div>
+        <div class="field"><label for="al-tel">Telefono</label><input id="al-tel" type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="field"><label for="al-note">Note (facoltativo)</label><textarea id="al-note" rows="2"></textarea></div>
+      <label class="check"><input type="checkbox" id="al-priv"> <span>Acconsento all'uso dei miei dati per gestire la richiesta.</span></label>
+      <p class="warn-msg" id="al-err" hidden></p>
+      <button class="btn solid" type="submit">Invia la richiesta</button>
+      <div class="links"><button type="button" id="al-annulla">Annulla</button></div>
+    </form>
 
     <form class="card narrow" id="f-pren" hidden novalidate>
       <span class="lbl">La tua scelta</span>
@@ -1223,7 +1254,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 
     <div class="card narrow" id="pr-done" hidden>
       <p class="ok-msg" id="pr-ok"></p>
-      <p class="hint">Ti scriviamo per confermare. Se è la prima volta, puoi già fare la <a href="#preiscrizione">pre-iscrizione online</a>.</p>
+      <p class="hint" id="pr-done-hint">Ti scriviamo per confermare. Se è la prima volta, puoi già fare la <a href="#preiscrizione">pre-iscrizione online</a>.</p>
       <div class="links"><button type="button" id="pr-altra">Fai un'altra prenotazione</button></div>
     </div>
   </div>
@@ -2552,7 +2583,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       $('tab-corso').setAttribute('aria-selected', t === 'corso' ? 'true' : 'false');
       $('tab-prima').setAttribute('aria-selected', t === 'prima' ? 'true' : 'false');
       $('pr-prova').hidden = t !== 'prova'; $('pr-corso').hidden = t !== 'corso'; $('pr-prima').hidden = t !== 'prima';
-      $('f-pren').hidden = true; $('pr-done').hidden = true;
+      $('f-pren').hidden = true; $('pr-done').hidden = true; if (window.bwChiudiAltra) bwChiudiAltra();
     };
     $('tab-prova').addEventListener('click', function () { setTab('prova'); });
     $('tab-corso').addEventListener('click', function () { setTab('corso'); });
@@ -2569,7 +2600,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       b.addEventListener('click', function () {
         sedeScelta = b.dataset.sede;
         $('pr-sede').querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
-        $('pr-dopo-sede').hidden = false; $('f-pren').hidden = true; $('pr-done').hidden = true;
+        $('pr-dopo-sede').hidden = false; $('f-pren').hidden = true; $('pr-done').hidden = true; bwChiudiAltra();
         disegnaProve(); disegnaCorsi(); disegnaPrima();
       });
     });
@@ -2578,7 +2609,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       $('pr-scelta').textContent = testo;
       pr.querySelectorAll('.solo-prova').forEach(function (x) { x.hidden = tipo !== 'prova'; });
       $('pr-nome-lbl').textContent = tipo === 'prova' ? 'Nome e cognome del genitore' : 'Nome e cognome';
-      $('pr-err').hidden = true; $('f-pren').hidden = false; $('pr-done').hidden = true;
+      $('pr-err').hidden = true; $('f-pren').hidden = false; $('pr-done').hidden = true; bwChiudiAltra();
       $('f-pren').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
     var slotBtn = function (riga1, riga2, posti, testo, id) {
@@ -2712,6 +2743,67 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     };
     $('pr-anno').addEventListener('input', disegnaProve);
     leggiOfferte();
+    /* «Non trovo una data buona»: alternative_sito (solo lettura) e richieste_sito (solo insert, l'app risponde) */
+    var ALT = null, altScelta = null;
+    var TIPO_RICH = { prova: 'prova', corso: 'corso', prima: 'prima_volta' };
+    var COSA = { prova: 'Prova gratuita ragazzi', corso: 'Corso adulti', prima: 'La prima volta con un istruttore' };
+    window.bwChiudiAltra = function () { $('f-altra').hidden = true; $('pr-altra-box').hidden = false; };
+    fetch(SB_URL + '/rest/v1/alternative_sito?select=id,sede,testo,ordine&attiva=eq.true&order=ordine.asc', { headers: H })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) { ALT = Array.isArray(d) ? d : []; })
+      .catch(function () { ALT = ESEMPI ? [{ id: 'e1', sede: null, testo: 'martedì 20:00' }, { id: 'e2', sede: 'Carmagnola', testo: 'sabato 10:00' }] : []; });
+    var disegnaAlt = function () {
+      var box = $('al-alt'); box.innerHTML = ''; altScelta = null;
+      var l = (ALT || []).filter(function (a) { return !a.sede || a.sede === sedeScelta; });
+      $('al-alt-box').hidden = !l.length;
+      $('al-libero-lbl').textContent = l.length ? 'Oppure scrivi tu giorno e orario che preferisci' : 'Giorno e orario che preferisci';
+      l.forEach(function (a) {
+        var b = el('button', null, a.testo); b.type = 'button'; b.setAttribute('aria-pressed', 'false');
+        b.addEventListener('click', function () {
+          altScelta = altScelta === a.testo ? null : a.testo;
+          box.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b && altScelta ? 'true' : 'false'); });
+        });
+        box.appendChild(b);
+      });
+    };
+    $('pr-altra-apri').addEventListener('click', function () {
+      $('f-pren').hidden = true; $('pr-done').hidden = true;
+      $('al-cosa').textContent = COSA[tipo] + ' · ' + sedeScelta;
+      pr.querySelectorAll('.solo-prova-al').forEach(function (x) { x.hidden = tipo !== 'prova'; });
+      $('al-nome-lbl').textContent = tipo === 'prova' ? 'Nome e cognome del genitore' : 'Nome e cognome';
+      disegnaAlt(); $('al-err').hidden = true;
+      $('pr-altra-box').hidden = true; $('f-altra').hidden = false;
+      $('f-altra').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    $('al-annulla').addEventListener('click', bwChiudiAltra);
+    $('f-altra').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = function (id) { return String($(id).value).trim(); };
+      var nome = v('al-nome'), email = v('al-email'), tel = v('al-tel'), libero = v('al-libero'), ragazzo = v('al-ragazzo'), note = v('al-note');
+      var err = function (t) { $('al-err').hidden = false; $('al-err').textContent = t; };
+      if (!altScelta && !libero) { err('Scegli una delle date proposte oppure scrivi tu giorno e orario.'); return; }
+      if (!(nome && /.+@.+\..+/.test(email) && /^\+?\d{9,15}$/.test(tel.replace(/[\s.\-\/]/g, '')) && $('al-priv').checked && (tipo !== 'prova' || ragazzo))) { err('Compila nome, email, telefono' + (tipo === 'prova' ? ', il nome del ragazzo' : '') + ' e spunta il consenso.'); return; }
+      if (tipo === 'prova') note = 'Per: ' + ragazzo + (note ? ' · ' + note : '');
+      var riga = { sede: sedeScelta, tipo: TIPO_RICH[tipo], nome: nome, email: email, telefono: tel.replace(/[\s.\-\/]/g, ''), scelta: altScelta, libero: libero || null, note: note || null, privacy: true, stato: 'nuova' };
+      var finito = function (nota) {
+        $('f-altra').hidden = true; $('f-altra').reset(); $('pr-altra-box').hidden = false;
+        $('pr-ok').textContent = 'Richiesta inviata: ' + COSA[tipo] + ' · ' + sedeScelta + ' · ' + (altScelta || libero) + '. Ti rispondiamo per email.' + nota;
+        $('pr-done-hint').hidden = true; $('pr-done').hidden = false;
+        $('pr-done').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+      var btn = $('f-altra').querySelector('button[type="submit"]'); btn.disabled = true;
+      fetch(SB_URL + '/rest/v1/richieste_sito', {
+        method: 'POST',
+        headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify(riga)
+      }).then(function (r) { if (!r.ok) throw new Error(r.status); })
+        .then(function () { btn.disabled = false; finito(''); })
+        .catch(function () {
+          btn.disabled = false;
+          if (ESEMPI) finito(' (Anteprima: non è stata salvata.)');
+          else err('Non siamo riusciti a inviare la richiesta. Riprova tra qualche minuto, oppure chiamaci.');
+        });
+    });
     $('pr-annulla').addEventListener('click', function () { $('f-pren').hidden = true; });
     $('pr-altra').addEventListener('click', function () { $('pr-done').hidden = true; $('f-pren').reset(); });
     var errore = function (t) { $('pr-err').hidden = false; $('pr-err').textContent = t; };
@@ -2721,7 +2813,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       var ok = nome && /.+@.+\..+/.test(email) && tel && $('pr-priv').checked && (tipo !== 'prova' || ragazzo);
       $('pr-err').hidden = !!ok; $('pr-err').textContent = ok ? '' : 'Compila tutti i campi e spunta il consenso.';
       if (!ok) return;
-      var fatto = function (nota) { $('f-pren').hidden = true; $('pr-ok').textContent = 'Prenotazione ricevuta: ' + scelta + '.' + nota; $('pr-done').hidden = false; };
+      var fatto = function (nota) { $('f-pren').hidden = true; $('pr-ok').textContent = 'Prenotazione ricevuta: ' + scelta + '.' + nota; $('pr-done-hint').hidden = false; $('pr-done').hidden = false; };
       if (!sceltaId) { fatto(' (Anteprima: non è stata salvata.)'); return; }
       var btn = $('f-pren').querySelector('button[type="submit"]'); btn.disabled = true;
       /* i posti possono calare in ogni momento (anche prenotazioni prese al banco): si rileggono subito prima */
