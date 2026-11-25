@@ -154,6 +154,12 @@ nav { gap: 20px; }
 section { padding: 56px 0; }
 .head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
 .head p { color: var(--muted); max-width: 46ch; }
+.scala { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: -12px 0 22px; font-size: 14px; }
+.scala-tit { font-weight: 700; margin-right: 4px; }
+.scala-da, .scala-a { color: var(--muted); font-size: 13px; }
+.scala ol { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.scala li { background: var(--c); color: var(--t); border: 1px solid rgba(0,0,0,.12); border-radius: 999px; padding: 4px 11px; font-weight: 600; font-size: 13px; line-height: 1.3; }
+.scala li small { font-weight: 500; opacity: .8; }
 
 /* Sedi */
 .sedi { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
@@ -492,6 +498,20 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 .tabs button { font: inherit; border: 0; background: none; padding: 8px 16px; border-radius: 999px; cursor: pointer; color: var(--ink); }
 .tabs button[aria-selected="true"] { background: var(--blue); color: #fff; }
 .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin: 16px 0 20px; }
+.giorni { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 10px; }
+.sede-sel[data-per] { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: -8px 0 22px; }
+.sede-sel[data-per] .giorni { margin: 0; }
+.sede-sel[data-per] .giorni button { font: inherit; font-weight: 600; min-width: 130px; min-height: 44px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+.sede-sel[data-per] .giorni button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+.sede-sel[data-per] .giorni button[data-sede="Alba"][aria-pressed="true"] { background: var(--green); border-color: var(--green); }
+.years td small { display: block; color: var(--muted); font-size: 12.5px; }
+.sede-sel { margin-bottom: 18px; } .sede-sel .giorni { margin: 10px 0 0; } .sede-sel .giorni button { min-width: 140px; font-weight: 600; }
+.giorni button, .orari button { font: inherit; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 8px 14px; cursor: pointer; min-height: 44px; }
+.giorni button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+.orari { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 0 0 20px; }
+.orari button { border-radius: var(--r-sm); text-align: left; display: grid; gap: 2px; }
+.orari button small { color: var(--muted); font-size: 13px; }
+.orari button:disabled { opacity: .45; cursor: default; }
 .slot { font: inherit; text-align: left; display: grid; gap: 3px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; cursor: pointer; }
 .slot:hover:not(:disabled) { border-color: var(--blue); box-shadow: inset 0 0 0 1px var(--blue); }
 .slot:disabled { opacity: .5; cursor: not-allowed; }
@@ -609,6 +629,8 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       </div>
       <a class="btn solid cta" href="#preiscrizione" data-k="k914">Pre-iscriviti online</a>
       <p class="note cta-note" data-k="k915">Compili i dati da casa: in palestra trovi il modulo già stampato, ti basta firmarlo.</p>
+      <a class="btn cta" href="#prenota-prima" data-k="k918">Prenota la tua prima volta con un istruttore</a>
+      <p class="note cta-note" data-k="k919">Non hai mai arrampicato? Un istruttore ti spiega come funziona la palestra e ti fa provare i primi blocchi. È gratuito.</p>
     </div>
   </section>
 
@@ -647,6 +669,8 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
         <h2 data-k="k98">Corsi ragazzi</h2>
       </div>
 
+      <div class="sede-sel" data-per="ragazzi"><span class="lbl">Scegli la palestra</span><div class="giorni"><button type="button" data-sede="Carmagnola" aria-pressed="false">Carmagnola</button><button type="button" data-sede="Alba" aria-pressed="false">Alba</button></div></div>
+      <div class="per-sede" hidden>
       <div class="two-col">
         <div class="card">
           <div class="field">
@@ -654,7 +678,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
             <small class="hint">Digita l'anno di nascita: ti indichiamo i corsi adatti a te e il loro prezzo.</small>
             <input id="anno" type="number" inputmode="numeric" min="2009" max="2022" placeholder="Es. 2016">
           </div>
-          <div class="table-box">
+          <div class="table-box" data-sede-solo="Carmagnola" hidden>
             <table class="log years" id="years">
               <thead><tr><th scope="col" data-k="k99">Anno di nascita</th><th scope="col" data-k="k100">Giorni</th><th scope="col" data-k="k101">Orario</th></tr></thead>
               <tbody>
@@ -668,6 +692,22 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
                 <tr data-from="2012" data-to="2014"><td data-k="k123">2012–2014</td><td data-k="k124">Lun e Mer</td><td data-k="k125">18:30–20:00</td></tr>
                 <tr data-from="2009" data-to="2011"><td data-k="k126">2009–2011</td><td data-k="k127">Mar e Gio</td><td data-k="k128">18:00–20:00</td></tr>
                 <tr data-from="2009" data-to="2014"><td data-k="k129">2009–2014</td><td data-k="k130">Ven</td><td data-k="k131">18:30–20:00</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-box" data-sede-solo="Alba" hidden>
+            <table class="log years" id="years-alba">
+              <thead><tr><th scope="col">Età</th><th scope="col">Giorni</th><th scope="col">Orario</th></tr></thead>
+              <tbody>
+                <tr data-from="2020" data-to="2022"><td>4–6 anni<small>nati 2020–2022</small></td><td>Lun e Mer</td><td>17:00–18:00</td></tr>
+                <tr data-from="2012" data-to="2015"><td>11–14 anni<small>nati 2012–2015</small></td><td>Lun e Mer</td><td>18:00–19:30</td></tr>
+                <tr data-from="2016" data-to="2019"><td>7–10 anni<small>nati 2016–2019</small></td><td>Mar e Gio</td><td>17:00–18:00</td></tr>
+                <tr data-from="2009" data-to="2011"><td>15–17 anni<small>nati 2009–2011</small></td><td>Mar e Gio</td><td>18:00–19:30</td></tr>
+                <tr data-from="2019" data-to="2021"><td>5–7 anni<small>nati 2019–2021</small></td><td>Ven</td><td>17:00–18:00</td></tr>
+                <tr data-from="2019" data-to="2021"><td>5–7 anni<small>nati 2019–2021</small></td><td>Sab</td><td>15:00–16:00</td></tr>
+                <tr data-from="2015" data-to="2018"><td>8–11 anni<small>nati 2015–2018</small></td><td>Ven</td><td>18:00–19:30</td></tr>
+                <tr data-from="2015" data-to="2018"><td>8–11 anni<small>nati 2015–2018</small></td><td>Sab</td><td>16:00–17:30</td></tr>
+                <tr data-from="0" data-to="0"><td>Agonismo<small>su selezione</small></td><td>Lun e Mer</td><td>17:00–19:00</td></tr>
               </tbody>
             </table>
           </div>
@@ -702,6 +742,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
           </div>
         </div>
       </div>
+      </div>
     </div>
   </section>
 
@@ -709,8 +750,13 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
     <div class="wrap">
       <div class="head">
         <h2 data-k="k74">Corsi adulti</h2>
-        <p data-k="k75">Lezioni da un'ora con tecnici abilitati FASI. Si prenota in segreteria o chiamando lo 011 1911 6396, negli orari di apertura.</p>
+        <p data-k="k75">Lezioni da un'ora con tecnici abilitati FASI.</p>
       </div>
+
+      <div class="sede-sel" data-per="corsi"><span class="lbl">Scegli la palestra</span><div class="giorni"><button type="button" data-sede="Carmagnola" aria-pressed="false">Carmagnola</button><button type="button" data-sede="Alba" aria-pressed="false">Alba</button></div></div>
+      <div class="per-sede" hidden>
+      <p class="note" data-sede-solo="Carmagnola" hidden>A Carmagnola si prenota in segreteria o chiamando lo 011 1911 6396, negli orari di apertura.</p>
+      <p class="note" data-sede-solo="Alba" hidden>Ad Alba i corsi adulti partono nel 2027: per informazioni chiama il 377 394 5471.</p>
 
       <div class="corsi">
         <div class="corso"><span class="who" data-k="k76">Per iniziare</span><h3 data-k="k77">Corso base</h3><p data-k="k78">Le conoscenze fondamentali per diventare autonomi in palestra: uso corretto degli strumenti e tecnica di base per salire.</p></div>
@@ -740,6 +786,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
           </table>
         </div>
       </div>
+      </div>
     </div>
   </section>
 
@@ -749,6 +796,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
         <h2 data-k="k22">Nuova tracciatura</h2>
         <p data-k="k23">Ogni settimana smontiamo e ritracciamo qualcosa di nuovo. Qui trovi gli ultimi settori.</p>
       </div>
+      <div class="scala"><span class="scala-tit" data-k="k925">Scala di difficoltà</span><span class="scala-da">più facile</span><ol><li style="--c:#FB923C;--t:#3b1d05">Arancione <small>bambini</small></li><li style="--c:#9CA3AF;--t:#111">Grigio</li><li style="--c:#F3F4F6;--t:#111">Bianco</li><li style="--c:#4ADE80;--t:#0b2e16">Verde</li><li style="--c:#60A5FA;--t:#08213f">Blu</li><li style="--c:#FACC15;--t:#3a2e00">Giallo</li><li style="--c:#F87171;--t:#3d0b0b">Rosso</li><li style="--c:#1F2937;--t:#fff">Nero</li></ol><span class="scala-a">più difficile</span></div>
       <div class="trk-filters" id="trk-filters"></div>
       <div class="trk-grid" id="trk-list"></div>
       <button class="btn" type="button" id="trk-more" hidden>Mostra altri settori</button>
@@ -1121,10 +1169,19 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 <main id="prenota" class="soci-page" hidden>
   <div class="wrap">
     <p class="demo"><strong>Anteprima.</strong> Posti e date sono di esempio; non viene prenotato niente.</p>
-    <div class="head"><h2 data-k="k922">Prenota</h2><p data-k="k923">Una prova gratuita per i ragazzi o un ciclo del corso adulti. Ti confermiamo la prenotazione per email.</p></div>
+    <div class="head"><h2 data-k="k922">Prenota</h2><p data-k="k923">Una prova gratuita per i ragazzi, un ciclo del corso adulti o la tua prima volta con un istruttore. Ti confermiamo la prenotazione per email.</p></div>
+    <div class="card narrow sede-sel">
+      <span class="lbl">Per prima cosa: in quale palestra?</span>
+      <div class="giorni" id="pr-sede" role="group" aria-label="Palestra">
+        <button type="button" data-sede="Carmagnola" aria-pressed="false">Carmagnola</button>
+        <button type="button" data-sede="Alba" aria-pressed="false">Alba</button>
+      </div>
+    </div>
+    <div id="pr-dopo-sede" hidden>
     <div class="tabs" role="tablist">
       <button type="button" role="tab" id="tab-prova" aria-selected="true">Prova gratuita ragazzi</button>
       <button type="button" role="tab" id="tab-corso" aria-selected="false">Corso adulti</button>
+      <button type="button" role="tab" id="tab-prima" aria-selected="false">La prima volta</button>
     </div>
 
     <div id="pr-prova">
@@ -1137,6 +1194,16 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 
     <div id="pr-corso" hidden>
       <div class="slots" id="pr-corsi"></div>
+    </div>
+
+    <div id="pr-prima" hidden>
+      <div class="card narrow">
+        <p data-k="k924">Non hai mai arrampicato? Prenota un appuntamento gratuito con un istruttore: ti spiega come funziona la palestra e le regole di sicurezza e ti fa provare i primi blocchi.</p>
+        <small class="hint">Scegli il giorno e poi l'orario. Gli orari dei corsi ragazzi non sono prenotabili.</small>
+      </div>
+      <div class="giorni" id="pr-giorni" role="group" aria-label="Giorno"></div>
+      <div class="orari" id="pr-orari"></div>
+    </div>
     </div>
 
     <form class="card narrow" id="f-pren" hidden novalidate>
@@ -1552,7 +1619,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
     return m ? (+m[3] * 60 + +m[4]) - (+m[1] * 60 + +m[2]) : 0;
   }
   function etichetta(min) { return min === 45 ? '45 min' : min === 60 ? '1 ora' : min === 90 ? '1 ora e 30' : min === 120 ? '2 ore' : Math.floor(min / 60) + ' h ' + (min % 60 || ''); }
-  document.querySelectorAll('#years tbody tr').forEach(function (tr) {
+  document.querySelectorAll('.years tbody tr').forEach(function (tr) {
     var cella = tr.cells[tr.cells.length - 1], min = minuti(cella ? cella.textContent : '');
     if (!min) return;
     tr.dataset.dur = min <= 60 ? 'dur-a' : min <= 90 ? 'dur-b' : 'dur-c';
@@ -1560,9 +1627,19 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
     cella.setAttribute('data-dur', etichetta(min));
   });
   var prezzi = document.querySelectorAll('#prezzi-ragazzi tbody tr');
+  /* prima la palestra: le sezioni corsi mostrano solo la sede scelta (la scelta vale per tutte) */
+  var sedeCorsi = null;
+  var scegliSede = function (s) {
+    sedeCorsi = s;
+    document.querySelectorAll('.sede-sel[data-per] button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.sede === s ? 'true' : 'false'); });
+    document.querySelectorAll('.per-sede').forEach(function (x) { x.hidden = false; });
+    document.querySelectorAll('[data-sede-solo]').forEach(function (x) { x.hidden = x.getAttribute('data-sede-solo') !== s; });
+    anno.dispatchEvent(new Event('input'));
+  };
+  document.querySelectorAll('.sede-sel[data-per] button').forEach(function (b) { b.addEventListener('click', function () { scegliSede(b.dataset.sede); }); });
   anno.addEventListener('input', function () {
     var y = parseInt(anno.value, 10), n = 0, durate = {};
-    document.querySelectorAll('#years tbody tr').forEach(function (tr) {
+    document.querySelectorAll(sedeCorsi === 'Alba' ? '#years-alba tbody tr' : '#years tbody tr').forEach(function (tr) {
       var ok = y >= +tr.dataset.from && y <= +tr.dataset.to;
       tr.classList.toggle('hit', ok && !!y);
       tr.classList.toggle('dim', !ok && anno.value.length === 4);
@@ -1573,7 +1650,8 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       var d = (tr.className.match(/dur-[abc]/) || [])[0];
       tr.classList.toggle('dim', cerca && !durate[d]);
     });
-    msg.textContent = anno.value.length === 4 ? (n ? n + ' turni per chi è nato nel ' + y + '. ' + msgBase : 'Nessun corso per questo anno: chiedi in segreteria.') : msgBase;
+    var base = sedeCorsi === 'Alba' ? 'Ad Alba i corsi partono a gennaio 2027 (età compiuta nel 2026).' : msgBase;
+    msg.textContent = anno.value.length === 4 ? (n ? n + ' turni per chi è nato nel ' + y + '. ' + base : 'Nessun corso per questo anno: chiedi in segreteria.') : base;
   });
 
   // Pagine: sito, area soci, area staff
@@ -2472,15 +2550,29 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       tipo = t;
       $('tab-prova').setAttribute('aria-selected', t === 'prova' ? 'true' : 'false');
       $('tab-corso').setAttribute('aria-selected', t === 'corso' ? 'true' : 'false');
-      $('pr-prova').hidden = t !== 'prova'; $('pr-corso').hidden = t !== 'corso';
+      $('tab-prima').setAttribute('aria-selected', t === 'prima' ? 'true' : 'false');
+      $('pr-prova').hidden = t !== 'prova'; $('pr-corso').hidden = t !== 'corso'; $('pr-prima').hidden = t !== 'prima';
       $('f-pren').hidden = true; $('pr-done').hidden = true;
     };
     $('tab-prova').addEventListener('click', function () { setTab('prova'); });
     $('tab-corso').addEventListener('click', function () { setTab('corso'); });
-    window.addEventListener('hashchange', function () { if (location.hash === '#prenota-corso') setTab('corso'); if (location.hash === '#prenota-prova') setTab('prova'); });
+    $('tab-prima').addEventListener('click', function () { setTab('prima'); });
+    window.addEventListener('hashchange', function () { if (location.hash === '#prenota-corso') setTab('corso'); if (location.hash === '#prenota-prova') setTab('prova'); if (location.hash === '#prenota-prima') setTab('prima'); });
     if (location.hash === '#prenota-corso') setTab('corso');
+    if (location.hash === '#prenota-prima') setTab('prima');
 
     var sceltaId = null;
+    /* prima si sceglie la palestra: tutto quello che segue mostra solo quella sede */
+    var sedeScelta = null;
+    var nienteSede = function (box) { box.appendChild(el('p', 'meta', (sedeScelta === 'Alba' ? 'Ad ' : 'A ') + sedeScelta + ' per ora non ci sono date prenotabili online: chiamaci o scrivici.')); };
+    $('pr-sede').querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        sedeScelta = b.dataset.sede;
+        $('pr-sede').querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+        $('pr-dopo-sede').hidden = false; $('f-pren').hidden = true; $('pr-done').hidden = true;
+        disegnaProve(); disegnaCorsi(); disegnaPrima();
+      });
+    });
     var scegli = function (testo, id) {
       scelta = testo; sceltaId = id || null;
       $('pr-scelta').textContent = testo;
@@ -2504,6 +2596,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     var giornoLungo = function (s) { return maiusc(new Date(s + 'T12:00:00').toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })); };
     var nonDisp = function (box) { box.appendChild(el('p', 'meta', 'Le prenotazioni online non sono disponibili in questo momento: chiamaci o scrivici e ti prenotiamo noi.')); };
     var proveEsempio = function (y, box) {
+      if (sedeScelta !== 'Carmagnola') { nienteSede(box); return; }
       var trovati = 0, lista = [];
       document.querySelectorAll('#years tbody tr').forEach(function (tr) {
         if (!(y >= +tr.dataset.from && y <= +tr.dataset.to)) return;
@@ -2528,7 +2621,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       var mn = +$('pr-anno').min, mx = +$('pr-anno').max;
       if (mn && mx && (y < mn || y > mx)) { box.appendChild(el('p', 'meta', 'La prova gratuita \u00e8 per i corsi ragazzi (nati dal ' + mn + ' al ' + mx + '). Per gli adulti guarda la scheda \u00abCorso adulti\u00bb.')); return; }
       if (!OFF) { if (ESEMPI) proveEsempio(y, box); else nonDisp(box); return; }
-      var l = OFF.filter(function (o) { return o.tipo === 'prova' && (o.anno_da == null || y >= o.anno_da) && (o.anno_a == null || y <= o.anno_a); });
+      var l = OFF.filter(function (o) { return o.tipo === 'prova' && o.sede === sedeScelta && (o.anno_da == null || y >= o.anno_da) && (o.anno_a == null || y <= o.anno_a); });
       l.forEach(function (o) {
         var g = giornoLungo(o.data);
         box.appendChild(slotBtn(g, o.titolo + ' · ' + o.orario + ' · ' + o.sede, o.posti_liberi, 'Prova gratuita · ' + o.titolo + ' · ' + g + ', ' + o.orario + ' · ' + o.sede, o.id));
@@ -2536,6 +2629,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       if (!l.length) box.appendChild(el('p', 'meta', 'Nei prossimi giorni non ci sono prove per questo anno di nascita: chiedi in segreteria.'));
     };
     var corsiEsempio = function (box) {
+      if (sedeScelta !== 'Carmagnola') { nienteSede(box); return; }
       var lunedi = tra(1); while (lunedi.getDay() !== 1) lunedi.setDate(lunedi.getDate() + 1);
       [{ nome: 'Corso base', sede: 'Carmagnola', d: tra((lunedi - tra(0)) / 864e5 + 7), quando: 'lunedì 19:00 – 20:00', posti: 3 },
        { nome: 'Corso avanzato', sede: 'Carmagnola', d: tra((lunedi - tra(0)) / 864e5 + 9), quando: 'mercoledì 20:00 – 21:00', posti: 0 }].forEach(function (c) {
@@ -2546,7 +2640,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     var disegnaCorsi = function () {
       var box = $('pr-corsi'); box.innerHTML = '';
       if (!OFF) { if (ESEMPI) corsiEsempio(box); else nonDisp(box); return; }
-      var l = OFF.filter(function (o) { return o.tipo === 'corso'; });
+      var l = OFF.filter(function (o) { return o.tipo === 'corso' && o.sede === sedeScelta; });
       l.forEach(function (o) {
         var dal = new Date(o.data + 'T12:00:00').toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
         box.appendChild(slotBtn(o.titolo + ' · ' + o.sede, '4 lezioni dal ' + dal + ', ' + o.orario, o.posti_liberi, o.titolo + ' · ' + o.sede + ' · 4 lezioni dal ' + dal + ', ' + o.orario, o.id));
@@ -2558,7 +2652,54 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then(function (d) { OFF = Array.isArray(d) ? d : []; })
         .catch(function () { OFF = null; })
-        .then(function () { annate(); disegnaProve(); disegnaCorsi(); });
+        .then(function () { annate(); disegnaProve(); disegnaCorsi(); disegnaPrima(); });
+    };
+    /* la prima volta con un istruttore: appuntamenti negli orari di apertura, esclusi i corsi ragazzi e la mezz'ora prima.
+       Gli orari veri li pubblica l'app (tipo 'prima_volta' in offerte_sito); in anteprima si calcolano dagli orari del sito. */
+    var giornoPrima = null;
+    var primaEsempio = function () {
+      var l = [], corsi = [];
+      document.querySelectorAll('#years tbody tr').forEach(function (tr) {
+        var g = (tr.cells[1].textContent.toLowerCase().match(/lun|mar|mer|gio|ven|sab|dom/g) || []).map(function (x) { return GIORNI[x]; });
+        var o = (tr.cells[2].textContent.match(/(\d{1,2})[:.](\d{2})/g) || []).map(function (x) { var p = x.split(/[:.]/); return +p[0] * 60 + +p[1]; });
+        if (o.length === 2) g.forEach(function (d) { corsi.push([d, o[0] - 30, o[1]]); });
+      });
+      for (var i = 1; i <= 7; i++) {
+        var d = tra(i), wd = d.getDay(), da = wd === 0 || wd === 6 ? 14 * 60 : 12 * 60, a = wd === 0 || wd === 6 ? 19 * 60 : 22 * 60;
+        for (var m = da; m + 30 <= a; m += 30) {
+          if (corsi.some(function (c) { return c[0] === wd && m + 30 > c[1] && m < c[2]; })) continue;
+          var hh = function (x) { return Math.floor(x / 60) + ':' + ('0' + x % 60).slice(-2); };
+          l.push({ id: null, data: iso(d), orario: hh(m) + ' – ' + hh(m + 30), sede: 'Carmagnola', posti_liberi: (d.getDate() * 7 + m / 30) % 6 ? 1 : 0, esempio: true });
+        }
+      }
+      return l;
+    };
+    var disegnaPrima = function () {
+      var box = $('pr-giorni'), ora = $('pr-orari'); if (!box) return;
+      box.innerHTML = ''; ora.innerHTML = '';
+      if (!sedeScelta) return;
+      var l = OFF ? OFF.filter(function (o) { return o.tipo === 'prima_volta'; }) : (ESEMPI ? primaEsempio() : null);
+      if (!l) { nonDisp(ora); return; }
+      l = l.filter(function (o) { return o.sede === sedeScelta; });
+      var giorni = [];
+      l.forEach(function (o) { if (o.posti_liberi > 0 && giorni.indexOf(o.data) < 0) giorni.push(o.data); });
+      giorni.sort();
+      if (!giorni.length) { ora.appendChild(el('p', 'meta', (sedeScelta === 'Alba' ? 'Ad ' : 'A ') + sedeScelta + ' nei prossimi giorni non ci sono appuntamenti liberi: chiamaci e lo fissiamo insieme.')); return; }
+      if (giorni.indexOf(giornoPrima) < 0) giornoPrima = giorni[0];
+      giorni.forEach(function (g) {
+        var b = el('button', null, maiusc(new Date(g + 'T12:00:00').toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' }))); b.type = 'button';
+        b.setAttribute('aria-pressed', g === giornoPrima ? 'true' : 'false');
+        b.addEventListener('click', function () { giornoPrima = g; disegnaPrima(); });
+        box.appendChild(b);
+      });
+      l.filter(function (o) { return o.data === giornoPrima; }).sort(function (a, b) { return String(a.orario).localeCompare(String(b.orario), 'it', { numeric: true }); }).forEach(function (o) {
+        var b = el('button'); b.type = 'button';
+        b.appendChild(el('b', null, String(o.orario).split(/\s[–-]\s/)[0]));
+        b.appendChild(el('small', null, o.posti_liberi > 0 ? o.sede + (o.esempio ? ' (esempio)' : '') : 'Occupato'));
+        b.disabled = !(o.posti_liberi > 0);
+        b.addEventListener('click', function () { scegli('La prima volta con un istruttore · ' + giornoLungo(o.data) + ', ' + o.orario + ' · ' + o.sede, o.id); });
+        ora.appendChild(b);
+      });
     };
     /* per chi e' la prova: le annate dei corsi ragazzi (dalle offerte, o dalla tabella dei turni) */
     var annate = function () {
