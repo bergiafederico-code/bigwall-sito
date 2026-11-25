@@ -524,6 +524,8 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 .altra .btn { margin-top: 10px; }
 #al-alt button { font: inherit; min-height: 44px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
 #al-alt button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+.pr-preis { margin: 14px 0 6px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.pr-preis p { margin: 6px 0 12px; }
 </style>
 </head>
 <body>
@@ -1270,6 +1272,11 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 
     <div class="card narrow" id="pr-done" hidden>
       <p class="ok-msg" id="pr-ok"></p>
+      <div class="pr-preis" id="pr-preis" hidden>
+        <b>Un ultimo passo: fai ora la pre-iscrizione</b>
+        <p>Così quando arrivi in palestra il modulo è già pronto da firmare e non perdi tempo al banco. Nome e contatti li abbiamo già messi noi: mancano solo gli altri dati. Se sei già iscritto per questa stagione, non serve.</p>
+        <button class="btn solid" type="button" id="pr-preis-vai">Fai la pre-iscrizione</button>
+      </div>
       <p class="hint" id="pr-done-hint">Ti scriviamo per confermare. Se è la prima volta, puoi già fare la <a href="#preiscrizione">pre-iscrizione online</a>.</p>
       <div class="links"><button type="button" id="pr-altra">Fai un'altra prenotazione</button></div>
     </div>
@@ -2493,6 +2500,17 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       window.scrollTo(0, 0);
     };
     $('pre-nuova').addEventListener('click', function () { $('pre-rinnovo').hidden = true; $('pre-gia').hidden = false; aggiornaFasi(); });
+    window.bwPreDa = function (d) {
+      var parti = String(d.nome || '').trim().split(/\s+/);
+      fp.reset(); fp.hidden = false; $('pre-done').hidden = true; $('modulo').hidden = true; $('pre-err').hidden = true;
+      fp.querySelector('input[name="pre-chi"][value="adulto"]').checked = true;
+      aggiornaChi(); aggiornaFasi();
+      metti('p', { nome: parti.shift() || '', cognome: parti.join(' '), email: d.email, cell: d.cell });
+      $('pre-rinnovo').textContent = 'Abbiamo gi\u00e0 scritto nome e contatti della tua prenotazione: controlla nome e cognome e completa gli altri dati.';
+      $('pre-rinnovo').hidden = false;
+      location.hash = '#preiscrizione';
+      window.scrollTo(0, 0);
+    };
 
     var caselle = function (testo, n) {
       var s = String(testo || '').toUpperCase(), w = el('span', 'bx');
@@ -2804,7 +2822,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       var finito = function (nota) {
         $('f-altra').hidden = true; $('f-altra').reset(); $('pr-altra-box').hidden = false;
         $('pr-ok').textContent = 'Richiesta inviata: ' + COSA[tipo] + ' · ' + sedeScelta + ' · ' + (altScelta || libero) + '. Ti rispondiamo per email.' + nota;
-        $('pr-done-hint').hidden = true; $('pr-done').hidden = false;
+        $('pr-done-hint').hidden = true; preis(nome, email, tel); $('pr-done').hidden = false;
         $('pr-done').scrollIntoView({ behavior: 'smooth', block: 'start' });
       };
       var btn = $('f-altra').querySelector('button[type="submit"]'); btn.disabled = true;
@@ -2823,13 +2841,24 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     $('pr-annulla').addEventListener('click', function () { $('f-pren').hidden = true; });
     $('pr-altra').addEventListener('click', function () { $('pr-done').hidden = true; $('f-pren').reset(); });
     var errore = function (t) { $('pr-err').hidden = false; $('pr-err').textContent = t; };
+    /* dopo corso adulti o prima volta: invito alla pre-iscrizione, con nome e contatti gia' scritti */
+    var datiPreis = null;
+    var preis = function (nome, email, tel) {
+      var si = tipo === 'corso' || tipo === 'prima';
+      datiPreis = si ? { nome: nome, email: email, cell: String(tel).replace(/[\s.\-\/]/g, '') } : null;
+      $('pr-preis').hidden = !si;
+      if (si) $('pr-done-hint').hidden = true;
+    };
+    $('pr-preis-vai').addEventListener('click', function () {
+      if (window.bwPreDa && datiPreis) window.bwPreDa(datiPreis); else location.hash = '#preiscrizione';
+    });
     $('f-pren').addEventListener('submit', function (e) {
       e.preventDefault();
       var nome = String($('pr-nome').value).trim(), email = String($('pr-email').value).trim(), tel = String($('pr-tel').value).trim(), ragazzo = String($('pr-ragazzo').value).trim();
       var ok = nome && /.+@.+\..+/.test(email) && tel && $('pr-priv').checked && (tipo !== 'prova' || ragazzo);
       $('pr-err').hidden = !!ok; $('pr-err').textContent = ok ? '' : 'Compila tutti i campi e spunta il consenso.';
       if (!ok) return;
-      var fatto = function (nota) { $('f-pren').hidden = true; $('pr-ok').textContent = 'Prenotazione ricevuta: ' + scelta + '.' + nota; $('pr-done-hint').hidden = false; $('pr-done').hidden = false; };
+      var fatto = function (nota) { $('f-pren').hidden = true; $('pr-ok').textContent = 'Prenotazione ricevuta: ' + scelta + '.' + nota; $('pr-done-hint').hidden = false; preis(nome, email, tel); $('pr-done').hidden = false; };
       if (!sceltaId) { fatto(' (Anteprima: non è stata salvata.)'); return; }
       var btn = $('f-pren').querySelector('button[type="submit"]'); btn.disabled = true;
       /* i posti possono calare in ogni momento (anche prenotazioni prese al banco): si rileggono subito prima */
