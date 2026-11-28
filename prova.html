@@ -487,6 +487,9 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 .grid3 .s2 { grid-column: span 2; } .grid3 .s3 { grid-column: span 3; } .grid3 .s4 { grid-column: span 4; } .grid3 .s5 { grid-column: span 5; } .grid3 .s7 { grid-column: span 7; }
 @media (max-width: 640px) { .grid3 .field { grid-column: span 12; } .grid3 .s2, .grid3 .s3 { grid-column: span 4; } .grid3 .s5 { grid-column: span 8; } }
 .consensi { display: grid; gap: 12px; }
+.cons small { display: block; margin-top: 2px; font-size: 13px; font-weight: 600; }
+.cons small.cons-obbl { color: var(--blue); }
+.cons small.cons-fac { color: var(--muted); font-weight: 500; }
 .cons { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); }
 .cons > span { font-size: 15px; }
 .foglio { font-family: Arial, Helvetica, sans-serif; font-size: 12px; max-width: 820px; padding: 28px 32px; }
@@ -1203,9 +1206,9 @@ p.card.pre-gia { display: block; }
         <div class="consensi">
           <p class="hint">Alla luce dell'informativa privacy (la trovi anche nel modulo che firmerai):</p>
           <details class="testo-mod" id="pre-det-priv"><summary>Leggi l'informativa privacy</summary><div id="pre-txt-priv"></div></details>
-          <div class="cons"><span>Trattamento dei dati personali, compresi quelli sanitari</span><div class="seg"><label><input type="radio" name="c1" value="si"> Esprimo il consenso</label><label><input type="radio" name="c1" value="no"> Non esprimo il consenso</label></div></div>
-          <div class="cons"><span>Comunicazione dei dati a enti pubblici e società private per le finalità dell'informativa (FASI, assicurazione…)</span><div class="seg"><label><input type="radio" name="c2" value="si"> Esprimo il consenso</label><label><input type="radio" name="c2" value="no"> Non esprimo il consenso</label></div></div>
-          <div class="cons"><span>Trattamento dei dati per la promozione di Rotpunkt ASD (foto, video, newsletter)</span><div class="seg"><label><input type="radio" name="c3" value="si"> Esprimo il consenso</label><label><input type="radio" name="c3" value="no"> Non esprimo il consenso</label></div></div>
+          <div class="cons"><span>Trattamento dei dati personali, compresi quelli sanitari<small class="cons-obbl">Obbligatorio per iscriversi</small></span><div class="seg"><label><input type="radio" name="c1" value="si"> Esprimo il consenso</label><label><input type="radio" name="c1" value="no"> Non esprimo il consenso</label></div></div>
+          <div class="cons"><span>Comunicazione dei dati a enti pubblici e società private per le finalità dell'informativa (FASI, assicurazione…)<small class="cons-obbl">Obbligatorio per iscriversi</small></span><div class="seg"><label><input type="radio" name="c2" value="si"> Esprimo il consenso</label><label><input type="radio" name="c2" value="no"> Non esprimo il consenso</label></div></div>
+          <div class="cons"><span>Trattamento dei dati per la promozione di Rotpunkt ASD (foto, video, newsletter)<small class="cons-fac">Facoltativo</small></span><div class="seg"><label><input type="radio" name="c3" value="si"> Esprimo il consenso</label><label><input type="radio" name="c3" value="no"> Non esprimo il consenso</label></div></div>
         </div>
       </fieldset>
 
@@ -2505,6 +2508,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       else if (!$('pre-reg').checked) msg = 'Per inviare serve l’accettazione del regolamento.';
       else if (!radio('c1') || !radio('c2') || !radio('c3')) msg = 'Rispondi a tutte e tre le domande sulla privacy.';
       else if (radio('c1') !== 'si') msg = 'Senza il consenso al trattamento dei dati non possiamo fare il tesseramento.';
+      else if (radio('c2') !== 'si') msg = 'Senza il consenso alla comunicazione dei dati (FASI, assicurazione) non possiamo fare il tesseramento.';
       $('pre-err').hidden = !msg; $('pre-err').textContent = msg;
       if (msg) { $('pre-err').scrollIntoView({ block: 'center' }); return; }
       var socio = leggi('p'), gen = m ? leggi('g') : null;
