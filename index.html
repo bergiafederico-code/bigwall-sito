@@ -109,6 +109,32 @@ header::before { content: ""; display: block; height: 4px; background: linear-gr
 .solo-tel { display: none; }
 @media (max-width: 600px) { .solo-tel { display: block; } .durate tbody td:first-child { white-space: normal; } .years td { white-space: normal; } .years td:last-child { white-space: nowrap; } #ragazzi .years th, #ragazzi .years td { padding-left: 8px; padding-right: 8px; } .durate th, .durate td { padding: 11px 8px; font-size: 14.5px; } .durate th:first-child, .durate td:first-child { padding-left: 12px; } }
 #ragazzi .years th, #ragazzi .years td { padding-left: 12px; padding-right: 12px; }
+/* corsi ragazzi: prima la palestra, sotto si intravedono orari e prezzi */
+.rg { position: relative; }
+.rg-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; transition: filter .25s, opacity .25s; }
+@media (min-width: 1000px) { .rg-body { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+.rg[data-stato="velo"] .rg-body { filter: blur(6px); opacity: .6; pointer-events: none; user-select: none; max-height: 620px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 60%, transparent); mask-image: linear-gradient(#000 60%, transparent); }
+.rg-scelta { position: absolute; z-index: 2; top: 48px; left: 50%; transform: translateX(-50%); width: min(92%, 380px); display: grid; gap: 12px; justify-items: center; text-align: center; padding: 26px 24px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 18px 48px rgba(0, 0, 0, .14); }
+.rg-scelta b { font-size: 20px; }
+.rg-scelta .sede-sel[data-per] { margin: 0; justify-content: center; } .rg-scelta .giorni { justify-content: center; }
+.rg[data-stato="ok"] .rg-scelta { display: none; }
+.rg-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 10px 10px 18px; margin-bottom: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; }
+.rg-cambia { min-height: 40px; padding: 6px 16px; font-size: 15px; }
+.rg-card { gap: 14px; align-content: start; padding: 24px 22px; }
+.rg-tab .durate th, .rg-tab .durate td { padding: 12px 9px; }
+.rg-tab .durate th:first-child, .rg-tab .durate td:first-child { padding-left: 14px; white-space: normal; }
+.rg-tab .durate thead th { letter-spacing: .03em; }
+.rg-tit h3 { margin: 2px 0 0; font-size: 22px; }
+.rg-sub { margin-top: 10px; }
+.rg-tab { border: 1px solid var(--line); border-radius: var(--r-sm); }
+.rg-tab .log, .rg-tab .prices { border: 0; border-radius: 0; }
+.rg-card .note { margin: 0; }
+.rg-agon { font-weight: 600; }
+.rg-tab .prices td:first-child { white-space: nowrap; }
+@media (max-width: 600px) { .rg-card { padding: 20px 14px; } .rg-bar { padding-left: 14px; } }
+.rg-piede { color: var(--muted); font-size: 13.5px; }
+body.editing .rg .rg-body { filter: none; opacity: 1; pointer-events: auto; max-height: none; -webkit-mask-image: none; mask-image: none; }
+body.editing .rg-scelta { position: static; transform: none; margin: 0 auto 20px; }
 .years tr.dim td { opacity: .4; }
 nav { display: flex; gap: 22px; align-items: center; font-weight: 600; font-size: 16px; }
 nav a { text-decoration: none; color: var(--ink); padding: 6px 2px; border-bottom: 2px solid transparent; white-space: nowrap; }
@@ -523,16 +549,26 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
         <h2>Corsi ragazzi</h2>
       </div>
 
-      <div class="sede-sel" data-per="ragazzi"><span class="lbl">Scegli la palestra</span><div class="giorni"><button type="button" data-sede="Carmagnola" aria-pressed="false">Carmagnola</button><button type="button" data-sede="Alba" aria-pressed="false">Alba</button></div></div>
-      <div class="per-sede" hidden>
-      <div class="two-col">
-        <div class="card">
-          <div class="field">
+      <div class="rg" id="rg" data-stato="velo">
+        <div class="rg-scelta" id="rg-scelta">
+          <span class="lbl">Orari e prezzi</span>
+          <b>In quale palestra?</b>
+          <div class="sede-sel" data-per="ragazzi"><div class="giorni"><button type="button" data-sede="Carmagnola" aria-pressed="false">Carmagnola</button><button type="button" data-sede="Alba" aria-pressed="false">Alba</button></div></div>
+        </div>
+        <div class="rg-bar" id="rg-bar" hidden>
+          <span>Palestra di <b id="rg-sede"></b></span>
+          <button type="button" class="btn rg-cambia" id="rg-cambia">Cambia palestra</button>
+        </div>
+
+        <div class="rg-body" id="rg-body">
+          <div class="card rg-card">
+            <div class="rg-tit"><span class="lbl">Orari</span><h3>I turni della settimana</h3></div>
+            <div class="field">
             <label for="anno">Trova il tuo corso</label>
             <small class="hint">Digita l'anno di nascita: ti indichiamo i corsi adatti a te e il loro prezzo.</small>
             <input id="anno" type="number" inputmode="numeric" min="2009" max="2022" placeholder="Es. 2016">
-          </div>
-          <div class="table-box" data-sede-solo="Carmagnola" hidden>
+            </div>
+            <div class="table-box rg-tab" data-sede-solo="Carmagnola">
             <table class="log years" id="years">
               <thead><tr><th scope="col">Anno di nascita</th><th scope="col">Giorni</th><th scope="col">Orario</th></tr></thead>
               <tbody>
@@ -548,8 +584,8 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
                 <tr data-from="2009" data-to="2014"><td>2009–2014</td><td>Ven</td><td>18:30–20:00</td></tr>
               </tbody>
             </table>
-          </div>
-          <div class="table-box" data-sede-solo="Alba" hidden>
+            </div>
+            <div class="table-box rg-tab" data-sede-solo="Alba" hidden>
             <table class="log years" id="years-alba">
               <thead><tr><th scope="col">Anno di nascita</th><th scope="col">Giorni</th><th scope="col">Orario</th></tr></thead>
               <tbody>
@@ -563,19 +599,13 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
                 <tr data-from="2009" data-to="2011"><td>2009–2011</td><td>Mar e Gio</td><td>18:00–19:30</td></tr>
               </tbody>
             </table>
+            </div>
+            <p class="note" id="anno-msg"><br></p>
           </div>
-          <div class="table-box" data-sede-solo="Alba" hidden>
-            <table class="log">
-              <thead><tr><th scope="col">Agonismo</th><th scope="col">Giorni</th><th scope="col">Orario</th></tr></thead>
-              <tbody><tr><td>Su selezione</td><td>Lun e Mer</td><td>17:00–19:00</td></tr></tbody>
-            </table>
-          </div>
-          <p class="note" id="anno-msg"></p>
-        </div>
 
-        <div style="display:grid;gap:20px">
-          <div style="display:grid;gap:20px">
-          <div class="table-box">
+          <div class="card rg-card">
+            <div class="rg-tit"><span class="lbl">Tariffe</span><h3>Corsi per durata della lezione</h3></div>
+            <div class="table-box rg-tab">
             <table class="prices durate" id="prezzi-ragazzi">
               <caption class="contrib">Prezzi in euro, come contributo associativo.</caption>
               <thead>
@@ -588,31 +618,31 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
                 <tr class="dur-c"><td>2 ore</td><td>220</td><td>380</td><td>340</td><td>640</td></tr>
               </tbody>
             </table>
-          </div>
-          <p class="note solo-tel" style="margin-top:-12px">Scorri la tabella di lato per vedere i prezzi stagionali.</p>
-
-          <div class="table-box" data-sede-solo="Alba" hidden>
-            <table class="prices">
-              <caption class="contrib">Prezzi in euro, come contributo associativo.</caption>
-              <thead><tr><th scope="col">Agonismo ad Alba</th><th scope="col">Abbonamento</th></tr></thead>
-              <tbody>
-                <tr><td>Su selezione</td><td>2 rate da 320 €<small>da ottobre a maggio</small></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="table-box" data-sede-solo="Carmagnola" hidden>
+            </div>
+            <p class="note solo-tel">Scorri la tabella di lato per vedere i prezzi stagionali.</p>
+            <div class="rg-tit rg-sub"><h3>Agonismo</h3></div>
+            <div class="table-box rg-tab" data-sede-solo="Carmagnola">
             <table class="prices">
               <caption class="contrib">Prezzi in euro, come contributo associativo.</caption>
               <thead><tr><th scope="col">Gruppi sportivi</th><th scope="col">Abbonamento annuale</th></tr></thead>
               <tbody>
-                <tr><td>U15 – U17 – U19 – U21</td><td>3 rate da 300 €<small>settembre, gennaio, maggio</small></td></tr>
-                <tr><td>U11 – U13</td><td>2 rate da 320 €<small>settembre, gennaio</small></td></tr>
+                <tr><td>U15 – U17 – U19 – U21</td><td>3 rate da 300 €<small></small></td></tr>
+                <tr><td>U11 – U13</td><td>2 rate da 320 €<small></small></td></tr>
               </tbody>
             </table>
-          </div>
+            </div>
+            <div class="table-box rg-tab" data-sede-solo="Alba" hidden>
+            <table class="prices">
+              <caption class="contrib">Prezzi in euro, come contributo associativo.</caption>
+              <thead><tr><th scope="col">Gruppi sportivi</th><th scope="col">Abbonamento Annuale</th></tr></thead>
+              <tbody>
+                <tr><td>U11 – U21</td><td>2 rate da 320 €<small></small></td></tr>
+              </tbody>
+            </table>
+            </div>
+            <p class="note rg-agon">Gli orari dell'agonismo si chiedono in segreteria.</p>
           </div>
         </div>
-      </div>
       </div>
     </div>
   </section>
@@ -1020,11 +1050,24 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
   var scegliSede = function (s) {
     sedeCorsi = s;
     document.querySelectorAll('.sede-sel[data-per] button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.sede === s ? 'true' : 'false'); });
-    document.querySelectorAll('.per-sede').forEach(function (x) { x.hidden = false; });
-    document.querySelectorAll('[data-sede-solo]').forEach(function (x) { x.hidden = x.getAttribute('data-sede-solo') !== s; });
+    var rg = document.getElementById('rg');
+    if (rg) {
+      rg.setAttribute('data-stato', s ? 'ok' : 'velo');
+      document.getElementById('rg-bar').hidden = !s;
+      document.getElementById('rg-sede').textContent = s || '';
+      document.getElementById('rg-body').inert = !s;
+    }
+    /* finché non si sceglie, sotto il velo si vede Carmagnola */
+    document.querySelectorAll('[data-sede-solo]').forEach(function (x) { x.hidden = x.getAttribute('data-sede-solo') !== (s || 'Carmagnola'); });
     anno.dispatchEvent(new Event('input'));
   };
   document.querySelectorAll('.sede-sel[data-per] button').forEach(function (b) { b.addEventListener('click', function () { scegliSede(b.dataset.sede); }); });
+  var rgCambia = document.getElementById('rg-cambia');
+  if (rgCambia) rgCambia.addEventListener('click', function () {
+    anno.value = ''; scegliSede(null);
+    document.getElementById('ragazzi').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  scegliSede(null);
   anno.addEventListener('input', function () {
     var y = parseInt(anno.value, 10), n = 0, durate = {};
     document.querySelectorAll(sedeCorsi === 'Alba' ? '#years-alba tbody tr' : '#years tbody tr').forEach(function (tr) {
