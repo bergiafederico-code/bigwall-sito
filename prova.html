@@ -1191,7 +1191,7 @@ p.card.pre-gia { display: block; }
 <main id="prenota" class="soci-page" hidden>
   <div class="wrap">
     <p class="demo"><strong>Anteprima.</strong> Posti e date sono di esempio; non viene prenotato niente.</p>
-    <div class="head"><span class="lbl" id="pr-cosa">Prova gratuita ragazzi</span><h2 data-k="k922">Prenota</h2><p data-k="k923">La tua prima volta con un istruttore, una prova gratuita per i ragazzi o un ciclo del corso adulti. Ti contattiamo noi per confermare.</p></div>
+    <div class="head"><span class="lbl" id="pr-cosa">Prova gratuita ragazzi</span><h2 data-k="k922">Prenota</h2><p data-k="k989" data-pr-tipo="prova">Una lezione di prova gratuita in uno dei nostri corsi ragazzi. Scegli la palestra, scrivi l'anno di nascita e vedi le date con posti liberi. Ti contattiamo noi per confermare.</p><p data-k="k990" data-pr-tipo="corso" hidden>Un ciclo di lezioni del corso adulti con tecnici abilitati FASI. Scegli la palestra e la data di partenza. Ti contattiamo noi per confermare.</p><p data-k="k991" data-pr-tipo="prima" hidden>Un appuntamento gratuito con un istruttore, per chi non ha mai arrampicato. Scegli la palestra, il giorno e l'orario. Ti contattiamo noi per confermare.</p></div>
     <div class="card narrow sede-sel">
       <span class="lbl">Per prima cosa: in quale palestra?</span>
       <div class="giorni" id="pr-sede" role="group" aria-label="Palestra">
@@ -2618,6 +2618,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     var setTab = function (t) {
       tipo = t;
       $('pr-cosa').textContent = { prova: 'Prova gratuita ragazzi', corso: 'Corso adulti', prima: 'La prima volta con un istruttore' }[t];
+      document.querySelectorAll('#prenota [data-pr-tipo]').forEach(function (x) { x.hidden = x.getAttribute('data-pr-tipo') !== t; });
       $('tab-prova').setAttribute('aria-selected', t === 'prova' ? 'true' : 'false');
       $('tab-corso').setAttribute('aria-selected', t === 'corso' ? 'true' : 'false');
       $('tab-prima').setAttribute('aria-selected', t === 'prima' ? 'true' : 'false');
