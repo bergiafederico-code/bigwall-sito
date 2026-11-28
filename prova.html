@@ -526,6 +526,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 .altra .btn { margin-top: 10px; }
 #al-alt button { font: inherit; min-height: 44px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
 #al-alt button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+#prenota .tabs { display: none !important; }
 .pr-preis { margin: 14px 0 6px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .pr-preis p { margin: 6px 0 12px; }
 .prices caption.contrib { caption-side: bottom; text-align: left; color: var(--muted); font-size: 13.5px; padding: 10px 16px 12px; }
@@ -727,7 +728,7 @@ p.card.pre-gia { display: block; }
               <tbody><tr><td>Su selezione</td><td>Lun e Mer</td><td>17:00–19:00</td></tr></tbody>
             </table>
           </div>
-          <p class="note" id="anno-msg" data-k="k132">Primo quadrimestre: ottobre – gennaio. Secondo quadrimestre: febbraio – maggio.</p>
+          <p class="note" id="anno-msg" data-k="k132"></p>
           <a class="btn solid cta" href="#prenota-prova" data-k="k916">Prenota una prova gratuita per ragazzi</a>
         </div>
 
@@ -780,11 +781,6 @@ p.card.pre-gia { display: block; }
         <p data-k="k75">Lezioni da un'ora con tecnici abilitati FASI.</p>
       </div>
 
-      <div class="sede-sel" data-per="corsi"><span class="lbl">Scegli la palestra</span><div class="giorni"><button type="button" data-sede="Carmagnola" aria-pressed="false">Carmagnola</button><button type="button" data-sede="Alba" aria-pressed="false">Alba</button></div></div>
-      <div class="per-sede" hidden>
-      <p class="note" data-sede-solo="Carmagnola" hidden>A Carmagnola si prenota in segreteria o chiamando lo 011 1911 6396, negli orari di apertura.</p>
-      <p class="note" data-sede-solo="Alba" hidden>Ad Alba i corsi adulti partono nel 2027: per informazioni chiama il 377 394 5471.</p>
-
       <div class="corsi">
         <div class="corso"><span class="who" data-k="k76">Per iniziare</span><h3 data-k="k77">Corso base</h3><p data-k="k78">Le conoscenze fondamentali per diventare autonomi in palestra: uso corretto degli strumenti e tecnica di base per salire.</p></div>
         <div class="corso"><span class="who" data-k="k79">Per migliorare</span><h3 data-k="k80">Corso avanzato</h3><p data-k="k81">Perfezioni i movimenti del corso base, inizi ad allenarti con metodo e affronti gesti tecnici più complessi.</p></div>
@@ -812,7 +808,6 @@ p.card.pre-gia { display: block; }
             </tbody>
           </table>
         </div>
-      </div>
       </div>
     </div>
   </section>
@@ -1146,8 +1141,8 @@ p.card.pre-gia { display: block; }
       <fieldset>
         <legend>Tesseramento FASI</legend>
         <div class="seg">
-          <label><input type="radio" name="pre-fasi" value="no" checked> Non ancora tesserato FASI: si tessera con noi</label>
-          <label><input type="radio" name="pre-fasi" value="si"> Già tesserato FASI con un'altra società</label>
+          <label><input type="radio" name="pre-fasi" value="no" checked> <span id="pre-fasi-no">Non sono ancora tesserato FASI: mi tessero con voi</span></label>
+          <label><input type="radio" name="pre-fasi" value="si"> <span id="pre-fasi-si">Sono già tesserato FASI con un'altra società</span></label>
         </div>
         <div class="grid2" id="pre-fasi-dati" hidden>
           <div class="field"><label for="p-societa">Società</label><input id="p-societa"></div>
@@ -1196,7 +1191,7 @@ p.card.pre-gia { display: block; }
 <main id="prenota" class="soci-page" hidden>
   <div class="wrap">
     <p class="demo"><strong>Anteprima.</strong> Posti e date sono di esempio; non viene prenotato niente.</p>
-    <div class="head"><h2 data-k="k922">Prenota</h2><p data-k="k923">Una prova gratuita per i ragazzi, un ciclo del corso adulti o la tua prima volta con un istruttore. Ti contattiamo noi per confermare.</p></div>
+    <div class="head"><span class="lbl" id="pr-cosa">Prova gratuita ragazzi</span><h2 data-k="k922">Prenota</h2><p data-k="k923">La tua prima volta con un istruttore, una prova gratuita per i ragazzi o un ciclo del corso adulti. Ti contattiamo noi per confermare.</p></div>
     <div class="card narrow sede-sel">
       <span class="lbl">Per prima cosa: in quale palestra?</span>
       <div class="giorni" id="pr-sede" role="group" aria-label="Palestra">
@@ -1214,7 +1209,7 @@ p.card.pre-gia { display: block; }
     <div id="pr-prova">
       <div class="card narrow">
         <div class="field"><label for="pr-anno">Anno di nascita del ragazzo o della ragazza</label><input id="pr-anno" type="number" inputmode="numeric" min="2009" max="2022" placeholder="Es. 2016"></div>
-        <small class="hint" id="pr-chi">Solo per i corsi ragazzi. Ti mostriamo i turni adatti e le prossime date con posti liberi. Per gli adulti c'è il corso base, nella scheda «Corso adulti».</small>
+        <small class="hint" id="pr-chi">Solo per i corsi ragazzi. Ti mostriamo i turni adatti e le prossime date con posti liberi. Per gli adulti ci sono i corsi adulti: li trovi nella pagina principale.</small>
       </div>
       <div class="slots" id="pr-slots"></div>
     </div>
@@ -1709,7 +1704,7 @@ p.card.pre-gia { display: block; }
       var d = (tr.className.match(/dur-[abc]/) || [])[0];
       tr.classList.toggle('dim', cerca && !durate[d]);
     });
-    var base = sedeCorsi === 'Alba' ? msgBase + ' Ad Alba il primo anno si parte a gennaio 2027.' : msgBase;
+    var base = (sedeCorsi === 'Alba' ? msgBase + ' Ad Alba il primo anno si parte a gennaio 2027.' : msgBase).trim();
     msg.textContent = anno.value.length === 4 ? (n ? n + (n === 1 ? ' turno' : ' turni') + ' per chi è nato nel ' + y + '. ' + base : 'Nessun corso per questo anno: chiedi in segreteria.') : base;
   });
 
@@ -2360,6 +2355,8 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     var aggiornaChi = function () {
       var m = minore();
       $('pre-leg-socio').textContent = m ? 'Il ragazzo o la ragazza da iscrivere' : 'I tuoi dati';
+      $('pre-fasi-no').textContent = m ? 'Mio figlio o mia figlia non è ancora tesserato FASI: lo tessero con voi' : 'Non sono ancora tesserato FASI: mi tessero con voi';
+      $('pre-fasi-si').textContent = m ? 'Mio figlio o mia figlia è già tesserato FASI con un\u2019altra società' : 'Sono già tesserato FASI con un\u2019altra società';
       fp.querySelectorAll('.solo-adulto').forEach(function (x) { x.hidden = m; });
       fp.querySelectorAll('.solo-minore').forEach(function (x) { x.hidden = !m; });
       $('pre-socio').querySelectorAll('.f-contatto').forEach(function (x) { x.hidden = m; });
@@ -2620,6 +2617,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     var scelta = null, tipo = 'prova';
     var setTab = function (t) {
       tipo = t;
+      $('pr-cosa').textContent = { prova: 'Prova gratuita ragazzi', corso: 'Corso adulti', prima: 'La prima volta con un istruttore' }[t];
       $('tab-prova').setAttribute('aria-selected', t === 'prova' ? 'true' : 'false');
       $('tab-corso').setAttribute('aria-selected', t === 'corso' ? 'true' : 'false');
       $('tab-prima').setAttribute('aria-selected', t === 'prima' ? 'true' : 'false');
@@ -2781,7 +2779,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       document.querySelectorAll(sedeScelta === 'Alba' ? '#years-alba tbody tr' : '#years tbody tr').forEach(function (tr) { if (+tr.dataset.from) da = Math.min(da, +tr.dataset.from); if (+tr.dataset.to) a = Math.max(a, +tr.dataset.to); });
       if (a === 0) return;
       $('pr-anno').min = da; $('pr-anno').max = a;
-      $('pr-chi').textContent = 'Solo per i corsi ragazzi: nati dal ' + da + ' al ' + a + '. Ti mostriamo i turni adatti e le prossime date con posti liberi. Per gli adulti c\u2019\u00e8 il corso base, nella scheda \u00abCorso adulti\u00bb.';
+      $('pr-chi').textContent = 'Solo per i corsi ragazzi: nati dal ' + da + ' al ' + a + '. Ti mostriamo i turni adatti e le prossime date con posti liberi. Per gli adulti ci sono i corsi adulti: li trovi nella pagina principale.';
     };
     $('pr-anno').addEventListener('input', disegnaProve);
     leggiOfferte();

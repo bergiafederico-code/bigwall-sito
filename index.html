@@ -570,7 +570,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
               <tbody><tr><td>Su selezione</td><td>Lun e Mer</td><td>17:00–19:00</td></tr></tbody>
             </table>
           </div>
-          <p class="note" id="anno-msg">Primo quadrimestre: ottobre – gennaio. Secondo quadrimestre: febbraio – maggio.</p>
+          <p class="note" id="anno-msg"></p>
         </div>
 
         <div style="display:grid;gap:20px">
@@ -624,11 +624,6 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
         <p>Lezioni da un'ora con tecnici abilitati FASI.</p>
       </div>
 
-      <div class="sede-sel" data-per="corsi"><span class="lbl">Scegli la palestra</span><div class="giorni"><button type="button" data-sede="Carmagnola" aria-pressed="false">Carmagnola</button><button type="button" data-sede="Alba" aria-pressed="false">Alba</button></div></div>
-      <div class="per-sede" hidden>
-      <p class="note" data-sede-solo="Carmagnola" hidden>A Carmagnola si prenota in segreteria o chiamando lo 011 1911 6396, negli orari di apertura.</p>
-      <p class="note" data-sede-solo="Alba" hidden>Ad Alba i corsi adulti partono nel 2027: per informazioni chiama il 377 394 5471.</p>
-
       <div class="corsi">
         <div class="corso"><span class="who">Per iniziare</span><h3>Corso base</h3><p>Le conoscenze fondamentali per diventare autonomi in palestra: uso corretto degli strumenti e tecnica di base per salire.</p></div>
         <div class="corso"><span class="who">Per migliorare</span><h3>Corso avanzato</h3><p>Perfezioni i movimenti del corso base, inizi ad allenarti con metodo e affronti gesti tecnici più complessi.</p></div>
@@ -657,7 +652,6 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
             </tbody>
           </table>
         </div>
-      </div>
       </div>
     </div>
   </section>
@@ -1044,7 +1038,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       var d = (tr.className.match(/dur-[abc]/) || [])[0];
       tr.classList.toggle('dim', cerca && !durate[d]);
     });
-    var base = sedeCorsi === 'Alba' ? msgBase + ' Ad Alba il primo anno si parte a gennaio 2027.' : msgBase;
+    var base = (sedeCorsi === 'Alba' ? msgBase + ' Ad Alba il primo anno si parte a gennaio 2027.' : msgBase).trim();
     msg.textContent = anno.value.length === 4 ? (n ? n + (n === 1 ? ' turno' : ' turni') + ' per chi è nato nel ' + y + '. ' + base : 'Nessun corso per questo anno: chiedi in segreteria.') : base;
   });
 
