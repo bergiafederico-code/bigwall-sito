@@ -1045,7 +1045,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       tr.classList.toggle('dim', cerca && !durate[d]);
     });
     var base = sedeCorsi === 'Alba' ? msgBase + ' Ad Alba il primo anno si parte a gennaio 2027.' : msgBase;
-    msg.textContent = anno.value.length === 4 ? (n ? n + ' turni per chi è nato nel ' + y + '. ' + base : 'Nessun corso per questo anno: chiedi in segreteria.') : base;
+    msg.textContent = anno.value.length === 4 ? (n ? n + (n === 1 ? ' turno' : ' turni') + ' per chi è nato nel ' + y + '. ' + base : 'Nessun corso per questo anno: chiedi in segreteria.') : base;
   });
 
   // Pagine: sito e tutela dei tesserati

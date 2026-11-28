@@ -493,6 +493,8 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
   body.stampa-modulo #preiscrizione > .wrap > *:not(#modulo) { display: none !important; }
   body.stampa-modulo .modulo-bar { display: none !important; }
   body.stampa-modulo .foglio { border: 0; box-shadow: none; padding: 0; max-width: none; }
+  body.stampa-modulo, body.stampa-modulo #preiscrizione, body.stampa-modulo #preiscrizione > .wrap, body.stampa-modulo #modulo { padding: 0 !important; margin: 0 !important; max-width: none !important; border: 0 !important; box-shadow: none !important; background: #fff !important; }
+  body.stampa-modulo #modulo .foglio .pag { border: 0; padding: 0; margin: 0; }
 }
 .tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); margin-bottom: 18px; }
 .tabs button { font: inherit; border: 0; background: none; padding: 8px 16px; border-radius: 999px; cursor: pointer; color: var(--ink); }
@@ -526,6 +528,9 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 #al-alt button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
 .pr-preis { margin: 14px 0 6px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .pr-preis p { margin: 6px 0 12px; }
+.prices caption.contrib { caption-side: bottom; text-align: left; color: var(--muted); font-size: 13.5px; padding: 10px 16px 12px; }
+p.card.pre-gia { display: block; }
+@media (max-width: 600px) { .tabs { display: flex; width: 100%; } .tabs button { flex: 1 1 0; padding: 8px 6px; border-radius: 14px; line-height: 1.25; } }
 </style>
 </head>
 <body>
@@ -1179,7 +1184,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 
     <div class="card narrow pre-done" id="pre-done" hidden>
       <p class="ok-msg" id="pre-ok"></p>
-      <p class="hint">Quando arrivi in palestra di' il codice o il nome al banco: ti stampiamo il modulo da firmare. Ti abbiamo anche mandato un riepilogo per email (in anteprima no).</p>
+      <p class="hint">Quando arrivi in palestra di' il codice o il nome al banco: ti stampiamo il modulo da firmare.</p>
       <div class="pre-actions"><button class="btn" type="button" id="pre-vedi">Vedi il modulo come verrà stampato</button><button class="btn" type="button" id="pre-nuova">Nuova pre-iscrizione</button></div>
     </div>
 
@@ -1191,7 +1196,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
 <main id="prenota" class="soci-page" hidden>
   <div class="wrap">
     <p class="demo"><strong>Anteprima.</strong> Posti e date sono di esempio; non viene prenotato niente.</p>
-    <div class="head"><h2 data-k="k922">Prenota</h2><p data-k="k923">Una prova gratuita per i ragazzi, un ciclo del corso adulti o la tua prima volta con un istruttore. Ti confermiamo la prenotazione per email.</p></div>
+    <div class="head"><h2 data-k="k922">Prenota</h2><p data-k="k923">Una prova gratuita per i ragazzi, un ciclo del corso adulti o la tua prima volta con un istruttore. Ti contattiamo noi per confermare.</p></div>
     <div class="card narrow sede-sel">
       <span class="lbl">Per prima cosa: in quale palestra?</span>
       <div class="giorni" id="pr-sede" role="group" aria-label="Palestra">
@@ -1705,7 +1710,7 @@ footer .foot { display: flex; justify-content: space-between; gap: 24px 40px; fl
       tr.classList.toggle('dim', cerca && !durate[d]);
     });
     var base = sedeCorsi === 'Alba' ? msgBase + ' Ad Alba il primo anno si parte a gennaio 2027.' : msgBase;
-    msg.textContent = anno.value.length === 4 ? (n ? n + ' turni per chi è nato nel ' + y + '. ' + base : 'Nessun corso per questo anno: chiedi in segreteria.') : base;
+    msg.textContent = anno.value.length === 4 ? (n ? n + (n === 1 ? ' turno' : ' turni') + ' per chi è nato nel ' + y + '. ' + base : 'Nessun corso per questo anno: chiedi in segreteria.') : base;
   });
 
   // Pagine: sito, area soci, area staff
@@ -2499,7 +2504,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       location.hash = '#preiscrizione';
       window.scrollTo(0, 0);
     };
-    $('pre-nuova').addEventListener('click', function () { $('pre-rinnovo').hidden = true; $('pre-gia').hidden = false; aggiornaFasi(); });
+    $('pre-nuova').addEventListener('click', function () { $('pre-rinnovo').hidden = true; $('pre-gia').hidden = !ESEMPI; aggiornaFasi(); });
     window.bwPreDa = function (d) {
       var parti = String(d.nome || '').trim().split(/\s+/);
       fp.reset(); fp.hidden = false; $('pre-done').hidden = true; $('modulo').hidden = true; $('pre-err').hidden = true;
@@ -2609,6 +2614,8 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
   /* ---------- Prenotazioni: prove gratuite e corsi adulti ---------- */
   var pr = $('prenota');
   if (pr) {
+    /* con i dati veri le scritte «Anteprima» non servono */
+    if (!ESEMPI) document.querySelectorAll('#prenota .demo, #preiscrizione .demo, #pre-gia').forEach(function (x) { x.hidden = true; });
     var GIORNI = { dom: 0, lun: 1, mar: 2, mer: 3, gio: 4, ven: 5, sab: 6 };
     var scelta = null, tipo = 'prova';
     var setTab = function (t) {
@@ -2635,7 +2642,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
         sedeScelta = b.dataset.sede;
         $('pr-sede').querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
         $('pr-dopo-sede').hidden = false; $('f-pren').hidden = true; $('pr-done').hidden = true; bwChiudiAltra();
-        disegnaProve(); disegnaCorsi(); disegnaPrima();
+        annate(); disegnaProve(); disegnaCorsi(); disegnaPrima();
       });
     });
     var scegli = function (testo, id) {
@@ -2768,9 +2775,10 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
     };
     /* per chi e' la prova: le annate dei corsi ragazzi (dalle offerte, o dalla tabella dei turni) */
     var annate = function () {
+      /* le annate della palestra scelta: dalla tabella dei suoi corsi e dalle prove pubblicate */
       var da = 9999, a = 0;
-      (OFF || []).forEach(function (o) { if (o.tipo === 'prova') { if (o.anno_da) da = Math.min(da, o.anno_da); if (o.anno_a) a = Math.max(a, o.anno_a); } });
-      if (a === 0) document.querySelectorAll('#years tbody tr').forEach(function (tr) { if (+tr.dataset.from) da = Math.min(da, +tr.dataset.from); if (+tr.dataset.to) a = Math.max(a, +tr.dataset.to); });
+      (OFF || []).forEach(function (o) { if (o.tipo === 'prova' && (!sedeScelta || o.sede === sedeScelta)) { if (o.anno_da) da = Math.min(da, o.anno_da); if (o.anno_a) a = Math.max(a, o.anno_a); } });
+      document.querySelectorAll(sedeScelta === 'Alba' ? '#years-alba tbody tr' : '#years tbody tr').forEach(function (tr) { if (+tr.dataset.from) da = Math.min(da, +tr.dataset.from); if (+tr.dataset.to) a = Math.max(a, +tr.dataset.to); });
       if (a === 0) return;
       $('pr-anno').min = da; $('pr-anno').max = a;
       $('pr-chi').textContent = 'Solo per i corsi ragazzi: nati dal ' + da + ' al ' + a + '. Ti mostriamo i turni adatti e le prossime date con posti liberi. Per gli adulti c\u2019\u00e8 il corso base, nella scheda \u00abCorso adulti\u00bb.';
@@ -2821,7 +2829,7 @@ window.BW_SB = { url: 'https://ldmjwkwylaoabnefylyl.supabase.co', anon: 'eyJhbGc
       var riga = { sede: sedeScelta, tipo: TIPO_RICH[tipo], nome: nome, email: email, telefono: tel.replace(/[\s.\-\/]/g, ''), scelta: altScelta, libero: libero || null, note: note || null, privacy: true, stato: 'nuova' };
       var finito = function (nota) {
         $('f-altra').hidden = true; $('f-altra').reset(); $('pr-altra-box').hidden = false;
-        $('pr-ok').textContent = 'Richiesta inviata: ' + COSA[tipo] + ' · ' + sedeScelta + ' · ' + (altScelta || libero) + '. Ti rispondiamo per email.' + nota;
+        $('pr-ok').textContent = 'Richiesta inviata: ' + COSA[tipo] + ' · ' + sedeScelta + ' · ' + (altScelta || libero) + '. Ti rispondiamo appena possibile.' + nota;
         $('pr-done-hint').hidden = true; preis(nome, email, tel); $('pr-done').hidden = false;
         $('pr-done').scrollIntoView({ behavior: 'smooth', block: 'start' });
       };
